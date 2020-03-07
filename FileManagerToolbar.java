@@ -15,11 +15,13 @@ public class FileManagerToolbar extends JPanel implements ActionListener{
     * Default FileManagerToolbar constructor.
     */
    public FileManagerToolbar(){
+       // Configure layout manager
        setLayout(new FlowLayout(FlowLayout.LEFT));
 
-       // Configure buttons
+       // Instantiate a buttongroup for back/forward buttons
        navigation = new ButtonGroup();
 
+       // Configure buttons
        backButton = new JButton("<-"); // Instantiate the back button
        backButton.setToolTipText("Back"); // add a tooltip
        // add an action listener to it; it won't trigger any code if we don't do this
@@ -35,13 +37,14 @@ public class FileManagerToolbar extends JPanel implements ActionListener{
        add(forwardButton);
 
        // Configure address bar
-       addressBar = new JTextField(32);
+       addressBar = new JTextField(16);
        addressBar.setToolTipText("Enter a file path");
        addressBar.setText("C:\\");
        addressBar.addActionListener(this);
        add(addressBar);
 
-       searchBar = new JTextField(32);
+       // Configure search bar
+       searchBar = new JTextField(8);
        searchBar.setText("");
        searchBar.setToolTipText("Enter the name of a file you want to search for");
        searchBar.addActionListener(this);
@@ -50,6 +53,7 @@ public class FileManagerToolbar extends JPanel implements ActionListener{
 
    /**
     * Override actionPerformed to utilize the ActionListener code we implemented.
+    * @param e the ActionEvent to be processed.
     */
    @Override
    public void actionPerformed(ActionEvent e){
