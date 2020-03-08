@@ -51,6 +51,9 @@ public class DirectoryPanel extends JPanel implements MouseListener {
         
         // Set the background color.
         setBackground(Color.white);
+        
+        // Set a border
+        setBorder(BorderFactory.createLineBorder(new Color(128,128,128)));
     }
     
     /**
