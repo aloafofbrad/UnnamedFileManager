@@ -64,8 +64,17 @@ public class FilePanel extends JPanel implements MouseListener{
         select(false);
     }
     
+    /**
+     * Configures the field components with the file's data.
+     * @author Bradley Nickle
+     * @author Dan Tran
+     */
     private void configureFile(){
+        /* self is the File represented by the FilePanel. Not to be confused with
+        the Python naming convention in which "self" is analogous to "this". */
         File self = new File(filename.getText());
+        
+        // Set text for fields based on file data. Credit to Dan Tran
         size.setText(Long.toString(self.length()));
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
         //dateCreated.setText(sdf.format(self.))
@@ -102,7 +111,7 @@ public class FilePanel extends JPanel implements MouseListener{
     
     /**
      * 
-     * @return 
+     * @return a boolean representing whether or not this is selected
      */
     public boolean isSelected(){
         return isSelected;
@@ -111,10 +120,36 @@ public class FilePanel extends JPanel implements MouseListener{
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
+     * @author Bradley Nickle
+     * @author Dan Tran
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        select(!isSelected);
+        // Get the number of clicks. Credit to Dan Tran
+        final int CLICKS = e.getClickCount();
+        System.out.print(CLICKS + " ");
+        
+        if (e.getSource() == this ||
+            e.getSource() == pic ||
+            e.getSource() == filename ||
+            e.getSource() == size ||
+            e.getSource() == dateCreated ||
+            e.getSource() == dateModified)
+        {
+            if (CLICKS == 2)
+            {
+                System.out.println("Double Click");
+            }
+            else if (CLICKS == 1) // Single clicks.
+            {
+                System.out.println("Single Click");
+                select(!isSelected);
+            }
+            else if (e.getButton() == MouseEvent.BUTTON3)
+            {
+                System.out.println("Right Click");
+            }
+        }
     }
 
     /**
