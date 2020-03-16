@@ -20,7 +20,7 @@ public class FilePanel extends JPanel implements MouseListener{
      * Default constructor for FilePanels.
      * @param fn 
      */
-    public FilePanel(String fn){
+    public FilePanel(String fn,DirectoryPanel dp){
         setLayout(new FlowLayout(FlowLayout.LEFT));
         
         /* Configure the components for all fields relevant to the file represented
@@ -29,30 +29,30 @@ public class FilePanel extends JPanel implements MouseListener{
         // Configure the icon
         icon = new ImageIcon("src/main/java/icons/file.png",fn);
         pic = new JLabel(icon);
-        pic.addMouseListener(this);
+        pic.addMouseListener(dp);
         add(pic);
         
         // Configure name
         filename = new JLabel(fn);
-        filename.addMouseListener(this);
+        filename.addMouseListener(dp);
         filename.setToolTipText(fn);
         add(filename);
         
         // Configure size
         size = new JLabel("0");
         size.setToolTipText("Size in bytes");
-        size.addMouseListener(this);
+        size.addMouseListener(dp);
         add(size);
         
         // Configure date created
         dateCreated = new JLabel("1/1/1970 00:00");
-        dateCreated.addMouseListener(this);
+        dateCreated.addMouseListener(dp);
         dateCreated.setToolTipText("Date Created");
         add(dateCreated);
         
         // Configure date modified
         dateModified = new JLabel("1/1/1970 00:00");
-        dateModified.addMouseListener(this);
+        dateModified.addMouseListener(dp);
         dateModified.setToolTipText("Date Modified");
         add(dateModified);
         
@@ -60,7 +60,7 @@ public class FilePanel extends JPanel implements MouseListener{
         configureFile();
         
         // Add a MouseListener & deselect this
-        addMouseListener(this);
+        addMouseListener(dp);
         select(false);
     }
     
@@ -115,6 +115,21 @@ public class FilePanel extends JPanel implements MouseListener{
      */
     public boolean isSelected(){
         return isSelected;
+    }
+    
+    /**
+     * 
+     * @param o the event Object to be compared with
+     * @return whether or not this FilePanel has (or is) a component equal to o
+     */
+    public boolean hasSource(Object o){
+        if (o == this) return true;
+        if (o == filename) return true;
+        if (o == dateCreated) return true;
+        if (o == dateModified) return true;
+        if (o == pic) return true;
+        if (o == size) return true;
+        return false;
     }
 
     /**
