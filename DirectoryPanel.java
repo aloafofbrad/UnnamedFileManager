@@ -37,7 +37,7 @@ public class DirectoryPanel extends JPanel implements MouseListener {
         setLayout(layout);
         int i;
         for (i = 0;i < files.length;i++){
-            list[i] = new FilePanel(files[i]);
+            list[i] = new FilePanel(files[i],this);
             layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
             layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
             this.add(list[i]);
@@ -71,6 +71,17 @@ public class DirectoryPanel extends JPanel implements MouseListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
+        boolean thisWasClicked = (this == e.getSource());
+        
+        for (int i = 0;i < list.length;i++){
+            if (list[i].hasSource(e.getSource())){
+                System.out.println(list[i].getFileName() + " clicked");
+                thisWasClicked = false;
+            }
+        }
+        if (thisWasClicked){
+            System.out.println("DirectoryPanel Clicked");
+        }
     }
 
     /**
