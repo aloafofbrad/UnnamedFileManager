@@ -48,7 +48,7 @@ public class FileManagerToolbar extends JPanel implements ActionListener{
        searchBar.setText("");
        searchBar.setToolTipText("Enter the name of a file you want to search for");
        searchBar.addActionListener(this);
-       add(searchBar);
+       add(searchBar); 
    }
 
    /**
