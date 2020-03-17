@@ -57,30 +57,141 @@ public class DirectoryPanel extends JPanel implements MouseListener {
     }
     
     /**
-     * 
+     * @return the directory currently being represented by the DirectoryPanel
+     */
+    public String getCurrentDirectory(){
+        return currentDirectory;
+    }
+    
+    /**
      * @return the size of the panel
      */
     @Override
     public Dimension getPreferredSize(){
         return size;
     }
+    
+    /**
+     * Checks each FilePanel in a DirectoryPanel's list to see if it was the 
+     * source of an event.
+     * @param o the source.
+     * @return the index of the source FilePanel, or -1 if the source was the
+     *         DirectoryPanel, or -999 if it was neither.
+     * @author Bradley Nickle
+     */
+    public int findSource(Object o){
+        final int NOSOURCEFOUND = -999;
+        if (this == o){
+            return -1;
+        }
+        for (int i = 0;i < list.length;i++){
+            if (list[i].hasSource(o)){
+                return i;
+            }
+        }
+        return NOSOURCEFOUND;
+    }
 
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
+     * @author Bradley Nickle
+     * @author Dan Tran
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        boolean thisWasClicked = (this == e.getSource());
-        
-        for (int i = 0;i < list.length;i++){
-            if (list[i].hasSource(e.getSource())){
-                System.out.println(list[i].getFileName() + " clicked");
-                thisWasClicked = false;
+        /* First, discern what was clicked on. If nothing was clicked, nothing
+        needs to happen. */
+        int sourceIndex = findSource(e.getSource());
+        if (sourceIndex != -999){
+            // Get the number of clicks. Credit to Dan Tran
+            final int CLICKS = e.getClickCount();
+            final int BUTTON = e.getButton();
+            
+            // Double click
+            if (CLICKS == 2 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
+                /* If the double click was on the DirectoryPanel, deselect all
+                FilePanels. The following condition is equivalent to:
+                 "if (the e.getSource() == this)"
+                */
+                if (sourceIndex == -1){
+                    for (int i = 0;i < list.length;i++){
+                        list[i].select(false);
+                    }
+                }
+                
+                /* If the double click was on a FilePanel, open the file. */
+                else{
+                    // TODO open a directory
+                    // TODO open a file
+                }
             }
-        }
-        if (thisWasClicked){
-            System.out.println("DirectoryPanel Clicked");
+            
+            // Single left click
+            else if (CLICKS == 1 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
+                /* If this was any kind of click on the DirectoryPanel, deselect
+                all FilePanels. */
+                if (sourceIndex == -1){
+                    for (int i = 0;i < list.length;i++){
+                        list[i].select(false);
+                    }
+                }
+                
+                /* TODO If this was a shift click on a FilePanel, select all in
+                the range between previous selection and current selection
+                indices */
+                
+                /* TODO If this was a control click on a FilePanel, toggle its
+                selection boolean. */
+                /* if (...){
+                    bool isSelected = list[sourceIndex].isSelected();
+                    list[sourceIndex].select(!isSelected);
+                }
+                */
+                
+                /* If this was not a shift click or control click, deselect all
+                and select the source of the click. */
+                else {
+                    for (int i = 0;i < list.length;i++){
+                        if (i != sourceIndex){
+                            list[i].select(false);
+                        }
+                        else{
+                            list[i].select(true);
+                        }
+                    }
+                }
+            }
+            
+            // Single right click
+            else if (CLICKS == 1 && BUTTON == java.awt.event.MouseEvent.BUTTON3){
+                /* If the right click was on the DirectoryPanel, deselect all 
+                FilePanels and draw a popup menu for sorting. */
+                if (sourceIndex == -1){
+                    for (int i = 0;i < list.length;i++){
+                        list[i].select(false);
+                    }
+                    // TODO draw a popup menu
+                }
+                else{
+                    /* If the right click was on an unselected FilePanel,
+                    deselect all other FilePanels and select it. */
+                    if (!list[sourceIndex].isSelected()){
+                        for (int i = 0;i < list.length;i++){
+                            if (i != sourceIndex){
+                                list[i].select(false);
+                            }
+                            else{
+                                list[i].select(true);
+                            }
+                        }
+                    }
+                    /* If the right click was on a selected FilePanel, don't
+                    select/deselect anything. Nothing else needs to be done. */
+                    // TODO draw a popup menu
+                    // TODO apply selected operation to all selected FilePanels
+                }
+            }
         }
     }
 
