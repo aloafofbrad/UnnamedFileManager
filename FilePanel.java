@@ -8,17 +8,20 @@ import java.text.SimpleDateFormat;
  *
  * @author Bradley Nickle
  */
-public class FilePanel extends JPanel implements MouseListener{
+public class FilePanel extends JPanel{
     // Fields that will represent the file. Declared & instantiated in order from left to right.
     private JLabel pic,filename,size,dateCreated,dateModified;
     // An image that will be tied to this.pic.
     private ImageIcon icon;
     // Tracks whether or not this file should be selected.
-    private boolean isSelected;
+    private boolean isSelected,isDirectory;
     
     /**
      * Default constructor for FilePanels.
-     * @param fn 
+     * @param fn the filename (relative path, more or less)
+     * @param dp the DirectoryPanel which will be the MouseListener for the
+     *           FilePanel and its components
+     * @param isDir whether or not the file is a Directory.
      */
     public FilePanel(String fn,DirectoryPanel dp){
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -57,7 +60,7 @@ public class FilePanel extends JPanel implements MouseListener{
         add(dateModified);
         
         // Configure the file, filling in the fields with appropriate names and dates
-        configureFile();
+        configureFile(dp.getCurrentDirectory());
         
         // Add a MouseListener & deselect this
         addMouseListener(dp);
@@ -69,21 +72,22 @@ public class FilePanel extends JPanel implements MouseListener{
      * @author Bradley Nickle
      * @author Dan Tran
      */
-    private void configureFile(){
+    private void configureFile(String path){
         /* self is the File represented by the FilePanel. Not to be confused with
         the Python naming convention in which "self" is analogous to "this". */
-        File self = new File(filename.getText());
+        File self = new File(path + this.filename.getText());
+        this.isDirectory = self.isDirectory();
         
         // Set text for fields based on file data. Credit to Dan Tran
-        size.setText(Long.toString(self.length()));
+        this.size.setText(Long.toString(self.length()));
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
         //dateCreated.setText(sdf.format(self.))
         try{
-            dateModified.setText(sdf.format(self.lastModified()));
+            this.dateModified.setText(sdf.format(self.lastModified()));
         }
         catch (SecurityException e){
             System.out.println(e.getMessage());
-            dateModified.setText("01/01/1970 00:00");
+            this.dateModified.setText("01/01/1970 00:00");
         }
         
     }
@@ -103,7 +107,7 @@ public class FilePanel extends JPanel implements MouseListener{
     public void select(boolean b){
         isSelected = b;
         if (isSelected){
-            setBackground(Color.blue);
+            setBackground(new Color(127,127,255));
         } else{
             setBackground(Color.white);
         }
@@ -138,7 +142,7 @@ public class FilePanel extends JPanel implements MouseListener{
      * @author Bradley Nickle
      * @author Dan Tran
      */
-    @Override
+    /*@Override
     public void mouseClicked(MouseEvent e) {
         // Get the number of clicks. Credit to Dan Tran
         final int CLICKS = e.getClickCount();
@@ -165,42 +169,5 @@ public class FilePanel extends JPanel implements MouseListener{
                 System.out.println("Right Click");
             }
         }
-    }
-
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     */
-    @Override
-    public void mousePressed(MouseEvent e) {
-        
-    }
-
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     */
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        
-    }
-
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     */
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        
-    }
-
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     */
-    @Override
-    public void mouseExited(MouseEvent e) {
-        
-    }
-    
+    }*/
 }
