@@ -1,15 +1,16 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Modified JPanel that will display the contents of a directory (its files and
  * subdirectories).
  * @author Bradley Nickle
  */
-public class DirectoryPanel extends JPanel implements MouseListener {
+public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObserver {
     // File path of the current directory; this is the one that will be displayed
-    private String currentDirectory;
+    private String currentPath;
     // Contents of the current directory
     private FilePanel[] list;
     /* SpringLayout is the one we want for this one. Define the positions of
@@ -24,15 +25,23 @@ public class DirectoryPanel extends JPanel implements MouseListener {
     another, measured in pixels. There's no horizontal equivalent to this since
     we're only currently displaying files in a vertical list view. */
     private final int VERTICAL_FP_GAP = 25;
+    /**/
+    private Navigator fileNavigator;
     
     /**
      * Default constructor for DirectoryPanels.
      * @param current sets this.currentDirectory
-     * @param files the contents of the current directory. NOTE might be removed.
+     * @author Bradley Nickle
+     * @author Dan Tran
      */
-    public DirectoryPanel(String current,String[] files){
-        currentDirectory = current;
+    public DirectoryPanel(String current){
+        // Get a list of the current directory's contents
+        currentPath = current;
+        File currentDirectory = new File(currentPath);
+        String[] files = currentDirectory.list();
         list = new FilePanel[files.length];
+        
+        // Set up the DirectoryPanel's GUI components
         layout = new SpringLayout();
         setLayout(layout);
         int i;
@@ -59,8 +68,8 @@ public class DirectoryPanel extends JPanel implements MouseListener {
     /**
      * @return the directory currently being represented by the DirectoryPanel
      */
-    public String getCurrentDirectory(){
-        return currentDirectory;
+    public String getCurrentPath(){
+        return currentPath;
     }
     
     /**
@@ -91,6 +100,8 @@ public class DirectoryPanel extends JPanel implements MouseListener {
         }
         return NOSOURCEFOUND;
     }
+    
+    // TODO find a place for Brandon's code
 
     /**
      * Overridden MouseListener method.
@@ -193,6 +204,18 @@ public class DirectoryPanel extends JPanel implements MouseListener {
                 }
             }
         }
+    }
+    
+    /**
+     * Overridden NavigatorObserver method.
+     * "Refreshes" the directory that is being displayed. This should update any
+     * and all FilePanels in the DirectoryPanel.
+     * NOTICE: To be called from Navigator.notifyObservers only!
+     * @param s the Subject that was updated.
+     */
+    @Override
+    public void update(Subject s) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
