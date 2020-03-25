@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * any history once its memory is returned to the system.
  * @author Bradley Nickle
  */
-public class Navigator {
+public class Navigator extends Subject{
     private int index;
     private ArrayList<String> history;
     
