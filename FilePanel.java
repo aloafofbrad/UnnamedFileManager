@@ -15,13 +15,13 @@ public class FilePanel extends JPanel{
     private ImageIcon icon;
     // Tracks whether or not this file should be selected.
     private boolean isSelected,isDirectory;
+    private String absolutePath;
     
     /**
      * Default constructor for FilePanels.
      * @param fn the filename (relative path, more or less)
      * @param dp the DirectoryPanel which will be the MouseListener for the
      *           FilePanel and its components
-     * @param isDir whether or not the file is a Directory.
      */
     public FilePanel(String fn,DirectoryPanel dp){
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -42,25 +42,26 @@ public class FilePanel extends JPanel{
         add(filename);
         
         // Configure size
-        size = new JLabel("0");
+        size = new JLabel("null");
         size.setToolTipText("Size in bytes");
         size.addMouseListener(dp);
         add(size);
         
         // Configure date created
-        dateCreated = new JLabel("1/1/1970 00:00");
+        dateCreated = new JLabel("null");
         dateCreated.addMouseListener(dp);
         dateCreated.setToolTipText("Date Created");
         add(dateCreated);
         
         // Configure date modified
-        dateModified = new JLabel("1/1/1970 00:00");
+        dateModified = new JLabel("null");
         dateModified.addMouseListener(dp);
         dateModified.setToolTipText("Date Modified");
         add(dateModified);
         
         // Configure the file, filling in the fields with appropriate names and dates
-        configureFile(dp.getCurrentDirectory());
+        absolutePath = dp.getCurrentPath();
+        configureFile(absolutePath);
         
         // Add a MouseListener & deselect this
         addMouseListener(dp);
@@ -93,13 +94,34 @@ public class FilePanel extends JPanel{
     }
     
     /**
-     * 
-     * @return 
+     * @return the name of the file
      */
     public String getFileName(){
         return filename.getText();
     }
     
+    /**
+     * @return the name of the file
+     */
+    public String getFullFileName(){
+        return absolutePath + filename.getText();
+    }
+    
+    /**
+     * @return the directory the file is stored in 
+     */
+    public String getAbsolutePath(){
+        return absolutePath;
+    }
+    
+    /**
+     * @return the size of the file in bytes
+     */
+    public int getFileSize(){
+        return Integer.getInteger(size.getText());
+    }
+    
+    // TODO insert Ian's code here
     /**
      * 
      * @param b 
@@ -136,6 +158,7 @@ public class FilePanel extends JPanel{
         return false;
     }
 
+    // TODO determine whether or not anything from here is still needed
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
