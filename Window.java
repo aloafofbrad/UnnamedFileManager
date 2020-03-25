@@ -32,14 +32,10 @@ public class Window extends JFrame{
         setTitle("File Manager " + version);
         
         // Set up test data NOTE this will eventually be replaced with actual file data
-        String[] data = {"test zero","test one",
-                         "test two","test three",
-                         "test four","test five",
-                         "test six","test seven",
-                         "test eight","test nine"};
+        String path = "C:\\Users\\aloaf\\Pictures";
         
         // Create a directory panel
-        DirectoryPanel dp = new DirectoryPanel("",data);
+        DirectoryPanel dp = new DirectoryPanel(path);
         setContentPane(new FileManagerUI(dp));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
