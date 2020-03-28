@@ -12,11 +12,13 @@ public class FileManagerUI extends JScrollPane{
     /**
      * Default FileManagerUI constructor.
      * @param vp the viewport to be passed into the JScrollPane constructor.
-     *           Intended to be a DirectoryPanel (see DirectoryPanel.java)
+     *     Intended to be a DirectoryPanel (see DirectoryPanel.java)
+     * @param colHeader the Component to be viewed as the upper toolbar
+     *     Intended to be a FileManagerToolbar
      */
-    public FileManagerUI(Component vp){
+    public FileManagerUI(Component view,Component colHeader){
         // Call super()
-        super(vp,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        super(view,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
         // NOTE I might remove these data members, but I will keep them in case we need to get the scrollbar policies.
         this.vsb = VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -25,6 +27,6 @@ public class FileManagerUI extends JScrollPane{
         setWheelScrollingEnabled(true);
         // Set the column header to be a FileManagerToolbar (see FileManagerToolbar.java)
         // We don't really need to store the FileManagerToolbar as a member, since getColumnHeader() isn't being overridden
-        setColumnHeaderView(new FileManagerToolbar());
+        setColumnHeaderView(colHeader);
     }
 }
