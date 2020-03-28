@@ -74,6 +74,10 @@ public class Navigator extends Subject{
         if (index < last){
             index++;
         }
+        
+        /* Notify DirectoryPanel and FileManagerToolbar that the state may have
+        changed. */
+        notifyObservers();
     }
     
     /**
@@ -108,6 +112,10 @@ public class Navigator extends Subject{
                     ^current
         */
         index = history.size() - 1;
+        
+        /* Notify DirectoryPanel and FileManagerToolbar that the state may have
+        changed. */
+        notifyObservers();
     }
     
     /**
@@ -118,12 +126,34 @@ public class Navigator extends Subject{
         if (history.size() > 1 && index > first){
             index--;
         }
+        
+        /* Notify DirectoryPanel and FileManagerToolbar that the state may have
+        changed. */
+        notifyObservers();
+    }
+    
+    /**
+     * Checks whether or not a string is an existing directory
+     * @param s the string to be validated
+     * @return true if s represents an existing directory
+     */
+    public boolean exists(String s){
+        return true;
+    }
+    
+    /**
+     * Checks whether or not a string is valid as a file path
+     * @param s the string to be validated
+     * @return true if s is valid
+     */
+    public boolean validate(String s){
+        return true;
     }
     
     /**
      * @return true if the current directory is oldest in the history
      */
-    public boolean isBeginning(){
+    public boolean isAtBeginning(){
         int first = 0;
         if (index == first) return true;
         return false;
@@ -132,7 +162,7 @@ public class Navigator extends Subject{
     /**
      * @return true if the current directory is newest in the history
      */
-    public boolean isEnd(){
+    public boolean isAtEnd(){
         int last = history.size() - 1;
         if (index == last) return true;
         return false;
@@ -141,8 +171,8 @@ public class Navigator extends Subject{
     /**
      * @return true if the current directory is not the oldest or newest in the history
      */
-    public boolean isMiddle(){
-        if (!isBeginning() && !isEnd()) return true;
+    public boolean isAtMiddle(){
+        if (!isAtBeginning() && !isAtEnd()) return true;
         return false;
     }
     
