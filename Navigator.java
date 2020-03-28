@@ -78,7 +78,7 @@ public class Navigator extends Subject{
     
     /**
      * Move forward to a directory that is not in history.
-     * @param next 
+     * @param next the directory to move to
      */
     public void forward(String next){
         int last = history.size() - 1;
@@ -142,7 +142,7 @@ public class Navigator extends Subject{
      * @return true if the current directory is not the oldest or newest in the history
      */
     public boolean isMiddle(){
-        if (!isBeginning()){ if (!isEnd()){ return true;}}
+        if (!isBeginning() && !isEnd()) return true;
         return false;
     }
     
