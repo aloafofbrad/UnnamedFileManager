@@ -123,7 +123,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             final int CLICKS = e.getClickCount();
             final int BUTTON = e.getButton();
             
-            // Double click
+            // Double click (with left mouse button)
             if (CLICKS == 2 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
                 /* If the double click was on the DirectoryPanel, deselect all
                 FilePanels. The following condition is equivalent to:
