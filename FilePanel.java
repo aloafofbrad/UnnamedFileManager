@@ -73,16 +73,39 @@ public class FilePanel extends JPanel{
      * @author Bradley Nickle
      * @author Dan Tran
      */
-    private void configureFile(String path){
+    private void configureFile(String path){        
+        // Make sure that the path is properly delimited by "\\"
+        int last = path.length() - 1;
+        char delimiter = '\\';
+        if (path.charAt(last) != delimiter){
+            path = path + "\\";
+        }
+        
         /* self is the File represented by the FilePanel. Not to be confused with
         the Python naming convention in which "self" is analogous to "this". */
         File self = new File(path + this.filename.getText());
-        this.isDirectory = self.isDirectory();
         
-        // Set text for fields based on file data. Credit to Dan Tran
-        this.size.setText(Long.toString(self.length()));
+        // Update the file data based on file type (directory or otherwise)
+        this.isDirectory = self.isDirectory();
+        if (this.isDirectory){
+            // Update the icon
+            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
+            
+            // Hide the size of a directory.
+            this.size.setVisible(false);
+        }
+        else{
+            // Update the icon
+            this.icon = new ImageIcon("src/main/java/icons/file.png",path);
+            // Show & set text for fields based on file data. Credit to Dan Tran
+            this.size.setText(Long.toString(self.length()));
+            this.size.setVisible(true);
+        }
+        // Update the icon
+        this.pic.setIcon(this.icon);
+        
+        // Update the date modified
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
-        //dateCreated.setText(sdf.format(self.))
         try{
             this.dateModified.setText(sdf.format(self.lastModified()));
         }
@@ -91,6 +114,8 @@ public class FilePanel extends JPanel{
             this.dateModified.setText("01/01/1970 00:00");
         }
         
+        // TODO Update the date created
+        //dateCreated.setText(sdf.format(self.))
     }
     
     /**
