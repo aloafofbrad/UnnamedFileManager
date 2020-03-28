@@ -34,9 +34,13 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      * @author Bradley Nickle
      * @author Dan Tran
      */
-    public DirectoryPanel(String current){
+    public DirectoryPanel(Navigator n){
+        // Configure & observe fileNavigator
+        fileNavigator = n;
+        fileNavigator.attach(this);
+        
         // Get a list of the current directory's contents
-        currentPath = current;
+        currentPath = fileNavigator.getDirectory();
         File currentDirectory = new File(currentPath);
         String[] files = currentDirectory.list();
         list = new FilePanel[files.length];
