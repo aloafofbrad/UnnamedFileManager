@@ -219,7 +219,22 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      */
     @Override
     public void update(Subject s) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Check if currentPath == fileNavigator.getDirectory() (if not, do nothing)
+        // Remove all filepanels from this
+        // Remove all filepanels from list
+        // Add new filepanels to list
+        // Do something like this:
+        /*
+        // Get a list of the files from this directory (currentPath)
+        
+        int i;
+        for (i = 0;i < files.length;i++){
+            list[i] = new FilePanel(files[i],this);
+            layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
+            layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+            this.add(list[i]);
+        }
+        */
     }
 
     /**
