@@ -75,16 +75,32 @@ public class FileManagerToolbar extends JPanel implements ActionListener,Navigat
        if (e.getSource() == myComponent_n){...;} */
 
        if (e.getSource() == backButton){
-           // TODO tell the Navigator to go back
-           System.out.println("Back not yet supported");
-           System.out.println(addressBar.getText());
+           // Tell the Navigator to go back
+           if (nav.size() > 1 && !nav.isAtBeginning()){
+               nav.back();
+           }
        }
        if (e.getSource() == forwardButton){
-           // TODO tell the Navigator to go forward
-           System.out.println("Forward not yet supported");
+           /* Tell the Navigator to go forward (to a directory that is in the
+           history) */
+           if (nav.size() > 1 && !nav.isAtEnd()){
+               nav.forward();
+           }
        }
        if (e.getSource() == addressBar){
-           // TODO determine wether or not enter was pressed, then 
+           // TODO determine wether or not enter was pressed
+           if (true){
+                /* TODO tell the Navigator to go forward to whatever directory the user entered */
+                String potentialDirectory = addressBar.getText();
+                if (nav.validate(potentialDirectory)){
+                    if (nav.exists(potentialDirectory)){
+                        nav.forward(potentialDirectory);
+                    }
+                }
+           }
+       }
+       if (e.getSource() == searchBar){
+           // TODO search for a file
        }
    }
 
