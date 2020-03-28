@@ -136,18 +136,31 @@ public class Navigator extends Subject{
      * Checks whether or not a string is an existing directory
      * @param s the string to be validated
      * @return true if s represents an existing directory
+     * @author Dan Tran
      */
     public boolean exists(String s){
-        return true;
+       File file = new File(s);
+       if(file.exists())
+       {
+           return true;
+       }
+       else return false;
     }
     
     /**
      * Checks whether or not a string is valid as a file path
      * @param s the string to be validated
      * @return true if s is valid
+     * @author Dan Tran
      */
     public boolean validate(String s){
-        return true;
+        String arr[] = {"<",">",":","\"","/","\\","|","?","*"};
+        for (int i = 0; i < arr.length; i++)
+        {
+            if(s.contains(arr[i]))
+                return false;
+        }
+         return true;
     }
     
     /**
