@@ -125,7 +125,7 @@ public class FilePanel extends JPanel{
         return filename.getText();
     }
 
-    public JLabel getfilename(){
+    public JLabel getFileNameLabel(){
         return filename;
     }
     
