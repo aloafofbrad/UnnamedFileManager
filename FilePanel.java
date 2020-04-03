@@ -166,7 +166,7 @@ public class FilePanel extends JPanel{
     public void select(boolean b){
         isSelected = b;
         if (isSelected){
-            setBackground(new Color(127,127,255));
+            setBackground(new Color(100,100,228));
         } else{
             setBackground(Color.white);
         }

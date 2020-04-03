@@ -173,8 +173,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
 
                 // TODO rename file
                 //  if file pane was initially selected and the filename was single clicked on the second time, rename
-                System.out.println(e.getSource());
-                System.out.println(list[sourceIndex].getFileNameLabel());
                 if(list[sourceIndex].isSelected() == true & e.getSource() == list[sourceIndex].getFileNameLabel()){
                     String s = JOptionPane.showInputDialog(
                             null,
@@ -194,7 +192,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         }
                     }
 
-                    if (s != null){
+                    if (!s.isEmpty()){
                         list[sourceIndex].setText(s);
                     }
                 }
@@ -307,6 +305,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      */
     @Override
     public void mouseEntered(MouseEvent e) {
+        int sourceIndex = findSource(e.getSource());
+        if(sourceIndex >= 0 & list[sourceIndex].isSelected() == false) {
+            list[sourceIndex].setBackground(new Color(127,127,255));
+        }
     }
 
     /**
@@ -315,5 +317,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      */
     @Override
     public void mouseExited(MouseEvent e) {
+        int sourceIndex = findSource(e.getSource());
+        if(sourceIndex >= 0 & list[sourceIndex].isSelected() == false) {
+            list[sourceIndex].setBackground(new Color(255, 255, 255));
+        }
     }
 }
