@@ -116,10 +116,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     public boolean validString(String s){
         char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
 
-        if(s == null){
-            return false;
-        }
-
         for(int i = 0; i < s.length(); i++){
             for(int j = 0; j < 8; j++){
                 if(s.charAt(i) == forbidden[j]) {
@@ -187,9 +183,18 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                             JOptionPane.INFORMATION_MESSAGE
                     );
 
-                    if(validString(s) == false){
+                    if(!validString(s)) {
+                        while (validString(s) == false){
+                            s = JOptionPane.showInputDialog(
+                                    null,
+                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
+                                    "Rename",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
 
-                    } else {
+                    if (s != null){
                         list[sourceIndex].setText(s);
                     }
                 }
