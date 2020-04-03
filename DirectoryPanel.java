@@ -107,6 +107,29 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     
     // TODO find a place for Brandon's code
 
+
+    /**
+     * @param s string to be processed
+     * @author Ian Ho-Sing-Loy
+     * @return Whether a string contains illegal characters
+     * */
+    public boolean validString(String s){
+        char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
+
+        if(s == null){
+            return false;
+        }
+
+        for(int i = 0; i < s.length(); i++){
+            for(int j = 0; j < 8; j++){
+                if(s.charAt(i) == forbidden[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
@@ -151,7 +174,25 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         list[i].select(false);
                     }
                 }
-                
+
+                // TODO rename file
+                //  if file pane was initially selected and the filename was single clicked on the second time, rename
+                System.out.println(e.getSource());
+                System.out.println(list[sourceIndex].getfilename());
+                if(list[sourceIndex].isSelected() == true & e.getSource() == list[sourceIndex].getfilename()){
+                    String s = JOptionPane.showInputDialog(
+                            null,
+                            "Input New Name",
+                            "Rename",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    if(validString(s) == true){
+                        list[sourceIndex].setText(s);
+                    }
+                }
+
+
                 /* TODO If this was a shift click on a FilePanel, select all in
                 the range between previous selection and current selection
                 indices */
