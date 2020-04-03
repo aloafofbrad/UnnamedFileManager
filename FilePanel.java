@@ -183,28 +183,62 @@ public class FilePanel extends JPanel{
         return false;
     }
 
+    /**
+     * @param s string to be processed
+     * @author Ian Ho-Sing-Loy
+     *
+     */
+    public boolean validString(String s){
+        char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
+
+        if(s == null){
+            return false;
+        }
+
+        for(int i = 0; i < s.length(); i++){
+            for(int j = 0; j < 8; j++){
+                if(s.charAt(i) == forbidden[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     // TODO determine whether or not anything from here is still needed
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
      * @author Bradley Nickle
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
-    /*@Override
     public void mouseClicked(MouseEvent e) {
         // Get the number of clicks. Credit to Dan Tran
         final int CLICKS = e.getClickCount();
         System.out.print(CLICKS + " ");
-        
+
         if (e.getSource() == this ||
-            e.getSource() == pic ||
-            e.getSource() == filename ||
-            e.getSource() == size ||
-            e.getSource() == dateCreated ||
-            e.getSource() == dateModified)
+                e.getSource() == pic ||
+                e.getSource() == filename ||
+                e.getSource() == size ||
+                e.getSource() == dateCreated ||
+                e.getSource() == dateModified)
         {
-            if (CLICKS == 2)
-            {
+            if (CLICKS == 2){
+                if(e.getSource() == filename){
+                    String s = JOptionPane.showInputDialog(
+                            null,
+                            "Input New Name",
+                            "Rename",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    if(validString(s) == true){
+                        filename.setText(s);
+                    }
+                }
                 System.out.println("Double Click");
             }
             else if (CLICKS == 1) // Single clicks.
@@ -217,5 +251,5 @@ public class FilePanel extends JPanel{
                 System.out.println("Right Click");
             }
         }
-    }*/
+    }
 }

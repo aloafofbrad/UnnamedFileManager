@@ -11,7 +11,7 @@ public class FileManagerUI extends JScrollPane{
 
     /**
      * Default FileManagerUI constructor.
-     * @param vp the viewport to be passed into the JScrollPane constructor.
+     * @param view the viewport to be passed into the JScrollPane constructor.
      *     Intended to be a DirectoryPanel (see DirectoryPanel.java)
      * @param colHeader the Component to be viewed as the upper toolbar
      *     Intended to be a FileManagerToolbar

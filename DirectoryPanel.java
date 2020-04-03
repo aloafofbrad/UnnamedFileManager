@@ -30,7 +30,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     
     /**
      * Default constructor for DirectoryPanels.
-     * @param current sets this.currentDirectory
+     * @param n sets this.currentDirectory
      * @author Bradley Nickle
      * @author Dan Tran
      */
