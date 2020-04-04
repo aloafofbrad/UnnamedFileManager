@@ -112,7 +112,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      * @param s string to be processed
      * @author Ian Ho-Sing-Loy
      * @author Bradley Nickle
-     * @return false if a string contains illegal characters
+     * @return false if a string contains illegal characters or is null/empty
      * */
     public boolean validString(String s){
         char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
@@ -177,17 +177,17 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
 
                 // TODO rename file
                 //  if file pane was initially selected and the filename was single clicked on the second time, rename
-                if(list[sourceIndex].isSelected() == true & e.getSource() == list[sourceIndex].getFileNameLabel()){
-                    String s = JOptionPane.showInputDialog(
+                else if(list[sourceIndex].isSelected() == true && e.getSource() == list[sourceIndex].getFileNameLabel()){
+                    String newName = JOptionPane.showInputDialog(
                             null,
                             "Input New Name",
                             "Rename",
                             JOptionPane.INFORMATION_MESSAGE
                     );
 
-                    if(!validString(s)) {
-                        while (validString(s) == false && s != null){
-                            s = JOptionPane.showInputDialog(
+                    if(!validString(newName)) {
+                        while (validString(newName) == false && newName != null){
+                            newName = JOptionPane.showInputDialog(
                                     null,
                                     "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
                                     "Rename",
@@ -196,8 +196,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         }
                     }
 
-                    if (s != null && !s.isEmpty()){
-                        list[sourceIndex].setText(s);
+                    if (newName != null && !newName.isEmpty()){
+                        list[sourceIndex].setText(newName);
                     }
                 }
 
@@ -253,8 +253,16 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     }
                     /* If the right click was on a selected FilePanel, don't
                     select/deselect anything. Nothing else needs to be done. */
-                    // TODO draw a popup menu
-                    // TODO apply selected operation to all selected FilePanels
+                    /* TODO draw a popup menu */
+                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+                    OpenWithAction openWith = new OpenWithAction("FilePanel",list[sourceIndex]);
+                    
+                    rightClickFileMenu.add("Open with...").setAction(openWith);
+                    
+                    JComponent jc = (JComponent) e.getSource();
+                    rightClickFileMenu.show(jc,e.getX(),e.getY());
+                    
+                    /* TODO apply selected operation to all selected FilePanels */
                 }
             }
         }
