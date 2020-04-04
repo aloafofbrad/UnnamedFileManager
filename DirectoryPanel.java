@@ -175,8 +175,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     }
                 }
 
-                // TODO rename file
-                //  if file pane was initially selected and the filename was single clicked on the second time, rename
+                /* If file pane was initially selected and the filename was single
+                clicked on the second time, rename */
                 else if(list[sourceIndex].isSelected() == true && e.getSource() == list[sourceIndex].getFileNameLabel()){
                     String newName = JOptionPane.showInputDialog(
                             null,
@@ -185,6 +185,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                             JOptionPane.INFORMATION_MESSAGE
                     );
 
+                    // If the user entered an invalid filename, let them try again
                     if(!validString(newName)) {
                         while (validString(newName) == false && newName != null){
                             newName = JOptionPane.showInputDialog(
@@ -196,6 +197,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         }
                     }
 
+                    /* If the user didn't cancel, rename the file.
+                    newName == null if the user cancelled. */
                     if (newName != null && !newName.isEmpty()){
                         list[sourceIndex].setText(newName);
                     }
@@ -255,8 +258,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     select/deselect anything. Nothing else needs to be done. */
                     /* TODO draw a popup menu */
                     JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+                    OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
+                    rightClickFileMenu.add("Open").setAction(open);
                     OpenWithAction openWith = new OpenWithAction("FilePanel",list[sourceIndex]);
-                    
                     rightClickFileMenu.add("Open with...").setAction(openWith);
                     
                     JComponent jc = (JComponent) e.getSource();
