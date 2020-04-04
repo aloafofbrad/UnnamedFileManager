@@ -160,8 +160,13 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 
                 /* If the double click was on a FilePanel, open the file. */
                 else{
-                    // TODO open a directory
-                    // TODO open a file
+                    if (list[sourceIndex].isDirectory()){
+                        // TODO move to the new directory
+                    }
+                    else{
+                        OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
+                        open.actionPerformed(null);
+                    }
                 }
             }
             
@@ -256,8 +261,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     }
                     /* If the right click was on a selected FilePanel, don't
                     select/deselect anything. Nothing else needs to be done. */
-                    /* TODO draw a popup menu */
+                    /* Configure the popup menu */
                     JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+                    
+                    /* Add options to the menu (open, open with, rename, etc...) */
                     OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
                     rightClickFileMenu.add("Open").setAction(open);
                     OpenWithAction openWith = new OpenWithAction("FilePanel",list[sourceIndex]);
