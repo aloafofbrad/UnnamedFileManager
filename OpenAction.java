@@ -14,7 +14,7 @@ import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;*/
 
 /**
- * Action to let the user choose which program to open a file with.
+ * Action to open a file with a default program.
  * @author Brandon Moore
  * @author Brad Nickle
  */
@@ -37,7 +37,6 @@ public class OpenAction extends AbstractAction {
      * @param e the triggering event.
      */
     public void actionPerformed(ActionEvent e){
-        Component parent = (Component) e.getSource();
         String result = null;
         try{
             result = openFile();
