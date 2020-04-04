@@ -186,7 +186,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     );
 
                     if(!validString(s)) {
-                        while (validString(s) == false){
+                        while (validString(s) == false && s != null){
                             s = JOptionPane.showInputDialog(
                                     null,
                                     "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
@@ -196,7 +196,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         }
                     }
 
-                    if (!s.isEmpty() && !s.equals(null)){
+                    if (s != null && !s.isEmpty()){
                         list[sourceIndex].setText(s);
                     }
                 }
