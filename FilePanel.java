@@ -195,6 +195,14 @@ public class FilePanel extends JPanel{
     
     /**
      * 
+     * @return true if the represented file is a directory, false otherwise
+     */
+    public boolean isDirectory(){
+        return isDirectory;
+    }
+    
+    /**
+     * 
      * @param o the event Object to be compared with
      * @return whether or not this FilePanel has (or is) a component equal to o
      */
