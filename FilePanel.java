@@ -146,7 +146,7 @@ public class FilePanel extends JPanel{
      * @return the name of the file
      */
     public String getFullFileName(){
-        return absolutePath + filename.getText();
+        return absolutePath + "/" + filename.getText();
     }
     
     /**
