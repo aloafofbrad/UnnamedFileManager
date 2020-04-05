@@ -202,12 +202,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 }
 
 
-                /* TODO If this was a shift click on a FilePanel, select all in
-                the range between previous selection and current selection
-                indices */
+                /* TODO AFTER REQUIREMENTS If this was a shift click on a
+                FilePanel, select all in the range between previous selection
+                and current selection indices */
                 
-                /* TODO If this was a control click on a FilePanel, toggle its
-                selection boolean. */
+                /* TODO AFTER REQUIREMENTS If this was a control click on a
+                FilePanel, toggle its selection boolean. */
                 /* if (...){
                     bool isSelected = list[sourceIndex].isSelected();
                     list[sourceIndex].select(!isSelected);
@@ -236,7 +236,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     for (int i = 0;i < list.length;i++){
                         list[i].select(false);
                     }
-                    // TODO draw a popup menu
+                    // TODO draw a popup menu ? 
                 }
                 else{
                     /* If the right click was on an unselected FilePanel,
