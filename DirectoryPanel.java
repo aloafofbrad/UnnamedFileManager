@@ -164,8 +164,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         // TODO move to the new directory
                     }
                     else{
+                        /* NOTE this might be a tad hacky. But it runs. If you
+                        can find a better way to do this, you can replace it.
+                        -Brad */
                         OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
-                        open.actionPerformed(null);
+                        open.actionPerformed(new ActionEvent(e.getSource(),0,""));
                     }
                 }
             }
