@@ -29,7 +29,7 @@ public class FileManagerUI extends JScrollPane{
         // We don't really need to store the FileManagerToolbar as a member, since getColumnHeader() isn't being overridden
         setColumnHeaderView(colHeader);
         
-        // Increase scroll speed; the default is somewhat slow.
+        // Increase the distance scrolled by per scroll; the default is somewhat slow.
         getVerticalScrollBar().setUnitIncrement(16);
         getHorizontalScrollBar().setUnitIncrement(16);
     }
