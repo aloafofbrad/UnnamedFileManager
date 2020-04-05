@@ -307,7 +307,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     public void mouseEntered(MouseEvent e) {
         int sourceIndex = findSource(e.getSource());
         if(sourceIndex >= 0 && list[sourceIndex].isSelected() == false) {
-            list[sourceIndex].setBackground(new Color(127,127,255));
+            list[sourceIndex].setBackground(new Color(127,127,127));
         }
     }
 
