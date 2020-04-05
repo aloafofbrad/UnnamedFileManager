@@ -111,10 +111,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     /**
      * @param s string to be processed
      * @author Ian Ho-Sing-Loy
-     * @return Whether a string contains illegal characters
+     * @author Bradley Nickle
+     * @return false if a string contains illegal characters
      * */
     public boolean validString(String s){
         char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
+        
+        if (s == null) return false;
+        if (s.isEmpty()) return false;
 
         for(int i = 0; i < s.length(); i++){
             for(int j = 0; j < 8; j++){
@@ -192,7 +196,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         }
                     }
 
-                    if (!s.isEmpty()){
+                    if (!s.isEmpty() && !s.equals(null)){
                         list[sourceIndex].setText(s);
                     }
                 }
