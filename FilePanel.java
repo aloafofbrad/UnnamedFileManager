@@ -2,7 +2,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.*;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -111,11 +114,21 @@ public class FilePanel extends JPanel{
         }
         catch (SecurityException e){
             System.out.println(e.getMessage());
-            this.dateModified.setText("01/01/1970 00:00");
+            this.dateModified.setText("null");
         }
         
         // TODO Update the date created
         //dateCreated.setText(sdf.format(self.))
+        BasicFileAttributes attrib;
+        try{
+            attrib = Files.readAttributes(self.toPath(),BasicFileAttributes.class);
+            FileTime created = attrib.creationTime();
+            this.dateCreated.setText(sdf.format(new Date(created.toMillis())));
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+            this.dateCreated.setText("null");
+        }
     }
     
     /**
