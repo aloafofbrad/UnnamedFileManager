@@ -20,6 +20,7 @@ public class Navigator extends Subject{
      * Intended to be used when no default starting directory is available.
      */
     public Navigator(){
+        super();
         history = new ArrayList<String>();
         index = -1;
     }
@@ -31,6 +32,7 @@ public class Navigator extends Subject{
      * @param current 
      */
     public Navigator(String current){
+        super();
         history = new ArrayList<String>();
         add(current);
     }

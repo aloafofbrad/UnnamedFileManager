@@ -13,6 +13,7 @@ public abstract class Subject {
      * Default constructor for Subjects.
      */
     public Subject(){
+        super();
         observers = new ArrayList<NavigatorObserver>();
     }
     

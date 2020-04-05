@@ -30,7 +30,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     
     /**
      * Default constructor for DirectoryPanels.
-     * @param current sets this.currentDirectory
+     * @param n sets this.currentDirectory
      * @author Bradley Nickle
      * @author Dan Tran
      */
@@ -107,6 +107,25 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     
     // TODO find a place for Brandon's code
 
+
+    /**
+     * @param s string to be processed
+     * @author Ian Ho-Sing-Loy
+     * @return Whether a string contains illegal characters
+     * */
+    public boolean validString(String s){
+        char forbidden[] = {'/', '\\', '?', '*', '"', '<', '>', '|'};
+
+        for(int i = 0; i < s.length(); i++){
+            for(int j = 0; j < 8; j++){
+                if(s.charAt(i) == forbidden[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
@@ -151,7 +170,34 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         list[i].select(false);
                     }
                 }
-                
+
+                // TODO rename file
+                //  if file pane was initially selected and the filename was single clicked on the second time, rename
+                if(list[sourceIndex].isSelected() == true & e.getSource() == list[sourceIndex].getFileNameLabel()){
+                    String s = JOptionPane.showInputDialog(
+                            null,
+                            "Input New Name",
+                            "Rename",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    if(!validString(s)) {
+                        while (validString(s) == false){
+                            s = JOptionPane.showInputDialog(
+                                    null,
+                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
+                                    "Rename",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
+
+                    if (!s.isEmpty()){
+                        list[sourceIndex].setText(s);
+                    }
+                }
+
+
                 /* TODO If this was a shift click on a FilePanel, select all in
                 the range between previous selection and current selection
                 indices */
@@ -259,6 +305,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      */
     @Override
     public void mouseEntered(MouseEvent e) {
+        int sourceIndex = findSource(e.getSource());
+        if(sourceIndex >= 0 & list[sourceIndex].isSelected() == false) {
+            list[sourceIndex].setBackground(new Color(127,127,255));
+        }
     }
 
     /**
@@ -267,5 +317,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      */
     @Override
     public void mouseExited(MouseEvent e) {
+        int sourceIndex = findSource(e.getSource());
+        if(sourceIndex >= 0 & list[sourceIndex].isSelected() == false) {
+            list[sourceIndex].setBackground(new Color(255, 255, 255));
+        }
     }
 }

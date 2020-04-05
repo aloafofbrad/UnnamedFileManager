@@ -124,6 +124,10 @@ public class FilePanel extends JPanel{
     public String getFileName(){
         return filename.getText();
     }
+
+    public JLabel getFileNameLabel(){
+        return filename;
+    }
     
     /**
      * @return the name of the file
@@ -148,13 +152,21 @@ public class FilePanel extends JPanel{
     
     // TODO insert Ian's code here
     /**
+     * @author Ian Ho-Sing-Loy
+     * @param s New string for the filename
+     */
+    public void setText(String s){
+        filename.setText(s);
+    }
+
+    /**
      * 
      * @param b 
      */
     public void select(boolean b){
         isSelected = b;
         if (isSelected){
-            setBackground(new Color(127,127,255));
+            setBackground(new Color(100,100,228));
         } else{
             setBackground(Color.white);
         }
@@ -182,40 +194,4 @@ public class FilePanel extends JPanel{
         if (o == size) return true;
         return false;
     }
-
-    // TODO determine whether or not anything from here is still needed
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     * @author Bradley Nickle
-     * @author Dan Tran
-     */
-    /*@Override
-    public void mouseClicked(MouseEvent e) {
-        // Get the number of clicks. Credit to Dan Tran
-        final int CLICKS = e.getClickCount();
-        System.out.print(CLICKS + " ");
-        
-        if (e.getSource() == this ||
-            e.getSource() == pic ||
-            e.getSource() == filename ||
-            e.getSource() == size ||
-            e.getSource() == dateCreated ||
-            e.getSource() == dateModified)
-        {
-            if (CLICKS == 2)
-            {
-                System.out.println("Double Click");
-            }
-            else if (CLICKS == 1) // Single clicks.
-            {
-                System.out.println("Single Click");
-                select(!isSelected);
-            }
-            else if (e.getButton() == MouseEvent.BUTTON3)
-            {
-                System.out.println("Right Click");
-            }
-        }
-    }*/
 }
