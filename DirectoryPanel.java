@@ -160,8 +160,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 
                 /* If the double click was on a FilePanel, open the file. */
                 else{
-                    if (list[sourceIndex].isDirectory()){
-                        // TODO move to the new directory
+                    if (list[sourceIndex].isDirectory())
+                    {
+                    	fileNavigator.forward(list[sourceIndex].getFullFileName());
+                        currentPath = fileNavigator.getDirectory();
+                    	//update(fileNavigator);
                     }
                     else{
                         /* NOTE this might be a tad hacky. But it runs. If you
@@ -288,25 +291,38 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      * and all FilePanels in the DirectoryPanel.
      * NOTICE: To be called from Navigator.notifyObservers only!
      * @param s the Subject that was updated.
+     * @author Dan Tran
+     * @author Bradley Nickle
      */
     @Override
     public void update(Subject s) {
-        // Check if currentPath == fileNavigator.getDirectory() (if not, do nothing)
-        // Remove all filepanels from this
-        // Remove all filepanels from list
-        // Add new filepanels to list
-        // Do something like this:
-        /*
-        // Get a list of the files from this directory (currentPath)
+
+        // Move to the new directory
+        File currentDirectory = new File(fileNavigator.getDirectory());
+        currentPath = fileNavigator.getDirectory();
+        String[] files = currentDirectory.list();
         
+        // Hide & remove old FilePanels
         int i;
+        for (i = 0;i < list.length;i++){
+            list[i].removeAll();
+            list[i].removeMouseListener(this);
+            list[i].setVisible(false);
+            this.remove(list[i]);
+        }
+        revalidate();
+        
+        // Set up FilePanels for the new directory
+        list = new FilePanel[files.length];
         for (i = 0;i < files.length;i++){
             list[i] = new FilePanel(files[i],this);
             layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
             layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
             this.add(list[i]);
         }
-        */
+        
+        revalidate();
+        doLayout();
     }
 
     /**
