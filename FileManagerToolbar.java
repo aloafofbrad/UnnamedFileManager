@@ -74,7 +74,8 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
         /* this only needs to be updated if current doesn't match nav's current
         directory */
         if (!current.equals(nav.getDirectory())){
-            // TODO
+            current = nav.getDirectory();
+            addressBar.setText(current);
         }
     }
 
