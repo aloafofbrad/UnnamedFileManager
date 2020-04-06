@@ -30,7 +30,7 @@ public class FileManagerUI extends JScrollPane{
         setColumnHeaderView(colHeader);
         
         // Increase the distance scrolled by per scroll; the default is somewhat slow.
-        getVerticalScrollBar().setUnitIncrement(16);
-        getHorizontalScrollBar().setUnitIncrement(16);
+        verticalScrollBar.setUnitIncrement(16);
+        horizontalScrollBar.setUnitIncrement(16);
     }
 }
