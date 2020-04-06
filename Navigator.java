@@ -59,6 +59,7 @@ public class Navigator extends Subject{
         if (history.size() > 0){
             // Remove the most recently added directory
             int i = history.size() - 1;
+            System.out.println("Removing " + history.get(i));
             history.remove(i);
             
             // Update the index, if it is now beyond the end of the history
@@ -99,7 +100,7 @@ public class Navigator extends Subject{
         a <-> b                     N
               ^current              ^next, to be added
         */
-        while (index != last){
+        while (index != last && history.size() > 0){
             remove();
         }
         
