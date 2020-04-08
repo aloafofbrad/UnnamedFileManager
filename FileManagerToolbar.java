@@ -115,8 +115,10 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
         if (e.getKeyCode() == KeyEvent.VK_ENTER){
             if (e.getSource() == addressBar){
                 String potentialDirectory = addressBar.getText();
-                if (nav.exists(potentialDirectory)){
-                    if (nav.isDirectory(potentialDirectory)){
+                /* Check if potentialDirectory is a directory before moving to it.
+                Then, check if it is visitable. */
+                if (nav.isDirectory(potentialDirectory)){
+                    if (nav.canVisit(potentialDirectory)){
                         nav.forward(potentialDirectory);
                     }
                 }
