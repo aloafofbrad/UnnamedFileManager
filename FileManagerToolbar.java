@@ -112,16 +112,18 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getSource() == addressBar){
-            if (e.getKeyCode() == KeyEvent.VK_ENTER){
+        if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            if (e.getSource() == addressBar){
                 String potentialDirectory = addressBar.getText();
                 if (nav.exists(potentialDirectory)){
-                    nav.forward(potentialDirectory);
+                    if (nav.isDirectory(potentialDirectory)){
+                        nav.forward(potentialDirectory);
+                    }
                 }
             }
-        }
-        if (e.getSource() == searchBar){
-            // TODO search for a file
+            if (e.getSource() == searchBar){
+                // TODO search for a file
+            }
         }
     }
 
