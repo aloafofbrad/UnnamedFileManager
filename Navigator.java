@@ -113,7 +113,6 @@ public class Navigator extends Subject{
             a <-> b                     N
                   ^current              ^next, to be added
             */
-            System.out.println(index);
             while (index < last && history.size() > smallestIndex){
                 remove();
                 last = history.size() - 1;
@@ -154,11 +153,71 @@ public class Navigator extends Subject{
      */
     public boolean exists(String s){
        File file = new File(s);
-       if(file.exists())
-       {
-           return true;
+       try{
+           return file.exists();
        }
-       else return false;
+       catch(SecurityException se){
+           System.out.println(se.getMessage());
+           return false;
+       }
+    }
+    
+    /**
+     * 
+     * @param s the file to be tested
+     * @return true if the file is a directory
+     * @author Bradley Nickle
+     */
+    public boolean isDirectory(String s){
+        if (exists(s)){
+            File file = new File(s);
+            try{
+                return file.isDirectory();
+            }
+            catch (SecurityException se){
+                System.out.println(se.getMessage());
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 
+     * @param s the file to be checked
+     * @return true if the file can be visited
+     */
+    public boolean canVisit(String s){
+        if (exists(s)){
+            File file = new File(s);
+            try{
+                // If the file doesn't exist, we can't visit it
+                if (file.exists()){
+                    /* If the file's a directory, we should be able to get the
+                    number of files it contains. Otherwise, if permissions are
+                    blocking us from doing that, a SecurityException should be
+                    thrown. */
+                    if (file.isDirectory()){
+                        int num = file.list().length;
+                        return true;
+                    }
+                    /* If the file exists and is a File, and no permissions are
+                    blocking us, we can visit it. */
+                    else if (file.isFile()){
+                        return true;
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
+            catch(SecurityException se){
+                System.out.println(se.getMessage());
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return false;
     }
     
     /**
