@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Navigator extends Subject{
     private int index;
     private ArrayList<String> history;
+    private String root;
     
     /**
      * Default constructor for Navigators.
@@ -23,6 +24,7 @@ public class Navigator extends Subject{
         super();
         history = new ArrayList<String>();
         index = -1;
+        root = null;
     }
     
     /**
@@ -35,6 +37,7 @@ public class Navigator extends Subject{
         super();
         history = new ArrayList<String>();
         add(current);
+        root = current;
     }
     
     /**
@@ -42,6 +45,9 @@ public class Navigator extends Subject{
      * @param next the directory to be added.
      */
     public void add(String next){
+        if (history.size() == 0){
+            root = next;
+        }
         for (int i = 0;i < history.size();i++){
             if (history.get(i).equals(next)){
                 history.remove(i);
@@ -53,10 +59,10 @@ public class Navigator extends Subject{
     
     /**
      * Removes the newest directory from the history.
-     * Exception safe; checks if history is already empty.
+     * Exception safe; checks if history is already at minimum.
      */
     public void remove(){
-        if (history.size() > 0){
+        if (history.size() > 1){
             // Remove the most recently added directory
             int i = history.size() - 1;
             System.out.println("Removing " + history.get(i));
@@ -71,6 +77,7 @@ public class Navigator extends Subject{
     
     /**
      * Move forward to a directory that is in history.
+     * Called when FileManagerToolbar.forwardButton is clicked
      */
     public void forward(){
         int last = history.size() - 1;
@@ -85,23 +92,32 @@ public class Navigator extends Subject{
     
     /**
      * Move forward to a directory that is not in history.
+     * Called when:
+     *    -the user double clicks a FilePanel with FilePanel.isDirectory is true
+     *    -the user enters a new, valid directory in FileManagerToolbar.addressBar
+     *     and presses the "Enter" key
      * @param next the directory to move to
      */
     public void forward(String next){
         int last = history.size() - 1;
-        
-        /* Remove any directories "in front of" the current directory.
-        a <-> b <-> b1 <-> b2       N
-              ^current              ^next, to be added
-        
-        a <-> b <-> b1              N
-              ^current              ^next, to be added
-        
-        a <-> b                     N
-              ^current              ^next, to be added
-        */
-        while (index != last && history.size() > 0){
-            remove();
+        if (index != last){
+            int smallestIndex = 0 + index;
+
+            /* Remove any directories "in front of" the current directory.
+            a <-> b <-> b1 <-> b2       N
+                  ^current              ^next, to be added
+
+            a <-> b <-> b1              N
+                  ^current              ^next, to be added
+
+            a <-> b                     N
+                  ^current              ^next, to be added
+            */
+            System.out.println(index);
+            while (index < last && history.size() > smallestIndex){
+                remove();
+                last = history.size() - 1;
+            }
         }
         
         /* Add the next directory
@@ -110,12 +126,6 @@ public class Navigator extends Subject{
         */
         add(next);
         
-        /* Update the current directory essentially, (current = next)
-        a <-> b <-> N
-                    ^current
-        */
-        index = history.size() - 1;
-        
         /* Notify DirectoryPanel and FileManagerToolbar that the state may have
         changed. */
         notifyObservers();
@@ -123,6 +133,7 @@ public class Navigator extends Subject{
     
     /**
      * Move back to a directory.
+     * Called when FileManagerToolbar.backButton is clicked.
      */
     public void back(){
         int first = 0;
