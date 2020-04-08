@@ -162,13 +162,22 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 else{
                     if (list[sourceIndex].isDirectory())
                     {
-                    	fileNavigator.forward(list[sourceIndex].getFullFileName());
-                        currentPath = fileNavigator.getDirectory();
-                    	//update(fileNavigator);
+                        try{
+                            if (fileNavigator.canVisit(list[sourceIndex].getFullFileName())){
+                                fileNavigator.forward(list[sourceIndex].getFullFileName());
+                                currentPath = fileNavigator.getDirectory();
+                            }
+                        }
+                        catch(NullPointerException npe){
+                            System.out.println(npe.getMessage());
+                        }
                     }
                     else{
                         /* NOTE this might be a tad hacky. But it runs. If you
                         can find a better way to do this, you can replace it.
+                        
+                        The TL;DR is that it manually triggers an OpenAction,
+                        which we normally use in the right-click context menu.
                         -Brad */
                         OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
                         open.actionPerformed(new ActionEvent(e.getSource(),0,""));
@@ -313,12 +322,35 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         revalidate();
         
         // Set up FilePanels for the new directory
-        list = new FilePanel[files.length];
-        for (i = 0;i < files.length;i++){
-            list[i] = new FilePanel(files[i],this);
-            layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
-            layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
-            this.add(list[i]);
+        try{
+            list = new FilePanel[files.length];
+            for (i = 0;i < files.length;i++){
+                list[i] = new FilePanel(files[i],this);
+                layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
+                layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+                this.add(list[i]);
+            }
+            System.out.println(i + " FilePanels generated / " + files.length + " files");
+        }
+        /* Caught when unable to list contents/read data of a directory, but the
+        file still exists (files.length will be null, causing the exception).
+        Notable cases: shortcuts that have listing/reading permissions denied
+        system-wide. */
+        catch (NullPointerException npe){
+            System.out.println("NPE\n" + npe.getMessage());
+            list = new FilePanel[1];
+            list[0] = new FilePanel(npe.getMessage(),this);
+            layout.putConstraint(SpringLayout.WEST,list[0],5,SpringLayout.WEST,this);
+            layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
+            this.add(list[0]);
+        }
+        catch (Exception e){
+            System.out.println("Exception\n" + e.getMessage());
+            list = new FilePanel[1];
+            list[0] = new FilePanel(e.getMessage(),this);
+            layout.putConstraint(SpringLayout.WEST,list[0],5,SpringLayout.WEST,this);
+            layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
+            this.add(list[0]);
         }
         
         revalidate();
