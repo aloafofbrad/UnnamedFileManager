@@ -43,22 +43,31 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         currentPath = fileNavigator.getDirectory();
         File currentDirectory = new File(currentPath);
         String[] files = currentDirectory.list();
-        list = new FilePanel[files.length];
         
-        // Set up the DirectoryPanel's GUI components
-        layout = new SpringLayout();
-        setLayout(layout);
-        int i;
-        for (i = 0;i < files.length;i++){
-            list[i] = new FilePanel(files[i],this);
-            layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
-            layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
-            this.add(list[i]);
+        /* Set up the DirectoryPanel's GUI components. If the directory is empty
+        or nonexistent, none will be generated, leaving the DirectoryPanel blank. */
+        try{
+            list = new FilePanel[files.length];
+            layout = new SpringLayout();
+            setLayout(layout);
+            int i;
+            for (i = 0;i < files.length;i++){
+                list[i] = new FilePanel(files[i],this);
+                layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
+                layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+                this.add(list[i]);
+            }
+            size = new Dimension(300,files.length*VERTICAL_FP_GAP);
         }
+        catch(NullPointerException npe){
+            System.out.println(npe.getMessage());
+            list = new FilePanel[0];
+            size = new Dimension(300,VERTICAL_FP_GAP);
+        }
+        
         this.addMouseListener(this);
         /* Configure the DirectoryPanel to be scrollable by setting the size and
         calling setAutoscrolls(). */
-        size = new Dimension(300,files.length*VERTICAL_FP_GAP);
         this.setPreferredSize(size);
         this.setAutoscrolls(true);
         
