@@ -27,6 +27,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     private final int VERTICAL_FP_GAP = 25;
     /**/
     private Navigator fileNavigator;
+
+    Timer t;
+
+    boolean wasDoubleClick;
     
     /**
      * Default constructor for DirectoryPanels.
@@ -193,112 +197,124 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     }
                 }
             }
-            
-            // Single left click
-            else if (CLICKS == 1 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
-                /* If this was any kind of click on the DirectoryPanel, deselect
-                all FilePanels. */
-                if (sourceIndex == -1){
-                    for (int i = 0;i < list.length;i++){
-                        list[i].select(false);
-                    }
-                }
 
-                /* If file pane was initially selected and the filename was single
-                clicked on the second time, rename */
-                else if(list[sourceIndex].isSelected() == true && e.getSource() == list[sourceIndex].getFileNameLabel()){
-                    String newName = JOptionPane.showInputDialog(
-                            null,
-                            "Input New Name",
-                            "Rename",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
+            else {
+                int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+                t = new Timer(clickInterval, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e1) {
+                        if(wasDoubleClick){
+                            wasDoubleClick = false;
+                        } else {
+                            // Single left click
+                            if (BUTTON == java.awt.event.MouseEvent.BUTTON1) {
+                    /* If this was any kind of click on the DirectoryPanel, deselect
+                    all FilePanels. */
+                                if (sourceIndex == -1) {
+                                    for (int i = 0; i < list.length; i++) {
+                                        list[i].select(false);
+                                    }
+                                }
 
-                    // If the user entered an invalid filename, let them try again
-                    if(!validString(newName)) {
-                        while (validString(newName) == false && newName != null){
-                            newName = JOptionPane.showInputDialog(
-                                    null,
-                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
-                                    "Rename",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                    }
+                    /* If file pane was initially selected and the filename was single
+                    clicked on the second time, rename */
+                                else if (list[sourceIndex].isSelected() == true && e.getSource() == list[sourceIndex].getFileNameLabel()) {
+                                    String newName = JOptionPane.showInputDialog(
+                                            null,
+                                            "Input New Name",
+                                            "Rename",
+                                            JOptionPane.INFORMATION_MESSAGE
+                                    );
 
-                    /* If the user didn't cancel, rename the file.
-                    newName == null if the user cancelled. */
-                    if (newName != null && !newName.isEmpty()){
-                        list[sourceIndex].setText(newName);
-                    }
-                }
+                                    // If the user entered an invalid filename, let them try again
+                                    if (!validString(newName)) {
+                                        while (validString(newName) == false && newName != null) {
+                                            newName = JOptionPane.showInputDialog(
+                                                    null,
+                                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
+                                                    "Rename",
+                                                    JOptionPane.ERROR_MESSAGE
+                                            );
+                                        }
+                                    }
+
+                        /* If the user didn't cancel, rename the file.
+                        newName == null if the user cancelled. */
+                                    if (newName != null && !newName.isEmpty()) {
+                                        list[sourceIndex].setText(newName);
+                                    }
+                                }
 
 
-                /* TODO AFTER REQUIREMENTS If this was a shift click on a
-                FilePanel, select all in the range between previous selection
-                and current selection indices */
-                
-                /* TODO AFTER REQUIREMENTS If this was a control click on a
-                FilePanel, toggle its selection boolean. */
-                /* if (...){
-                    bool isSelected = list[sourceIndex].isSelected();
-                    list[sourceIndex].select(!isSelected);
-                }
-                */
-                
-                /* If this was not a shift click or control click, deselect all
-                and select the source of the click. */
-                else {
-                    for (int i = 0;i < list.length;i++){
-                        if (i != sourceIndex){
-                            list[i].select(false);
-                        }
-                        else{
-                            list[i].select(true);
-                        }
+                    /* TODO AFTER REQUIREMENTS If this was a shift click on a
+                    FilePanel, select all in the range between previous selection
+                    and current selection indices */
+
+                    /* TODO AFTER REQUIREMENTS If this was a control click on a
+                    FilePanel, toggle its selection boolean. */
+                    /* if (...){
+                        bool isSelected = list[sourceIndex].isSelected();
+                        list[sourceIndex].select(!isSelected);
                     }
-                }
-            }
-            
-            // Single right click
-            else if (CLICKS == 1 && BUTTON == java.awt.event.MouseEvent.BUTTON3){
-                /* If the right click was on the DirectoryPanel, deselect all 
-                FilePanels and draw a popup menu for sorting. */
-                if (sourceIndex == -1){
-                    for (int i = 0;i < list.length;i++){
-                        list[i].select(false);
-                    }
-                    // TODO draw a popup menu ? 
-                }
-                else{
-                    /* If the right click was on an unselected FilePanel,
-                    deselect all other FilePanels and select it. */
-                    if (!list[sourceIndex].isSelected()){
-                        for (int i = 0;i < list.length;i++){
-                            if (i != sourceIndex){
-                                list[i].select(false);
+                    */
+
+                    /* If this was not a shift click or control click, deselect all
+                    and select the source of the click. */
+                                else {
+                                    for (int i = 0; i < list.length; i++) {
+                                        if (i != sourceIndex) {
+                                            list[i].select(false);
+                                        } else {
+                                            list[i].select(true);
+                                        }
+                                    }
+                                }
                             }
-                            else{
-                                list[i].select(true);
+
+                            // Single right click
+                            else if (BUTTON == java.awt.event.MouseEvent.BUTTON3) {
+                    /* If the right click was on the DirectoryPanel, deselect all
+                    FilePanels and draw a popup menu for sorting. */
+                                if (sourceIndex == -1) {
+                                    for (int i = 0; i < list.length; i++) {
+                                        list[i].select(false);
+                                    }
+                                    // TODO draw a popup menu ?
+                                } else {
+                        /* If the right click was on an unselected FilePanel,
+                        deselect all other FilePanels and select it. */
+                                    if (!list[sourceIndex].isSelected()) {
+                                        for (int i = 0; i < list.length; i++) {
+                                            if (i != sourceIndex) {
+                                                list[i].select(false);
+                                            } else {
+                                                list[i].select(true);
+                                            }
+                                        }
+                                    }
+                        /* If the right click was on a selected FilePanel, don't
+                        select/deselect anything. Nothing else needs to be done. */
+                                    /* Configure the popup menu */
+                                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+
+                                    /* Add options to the menu (open, open with, rename, etc...) */
+                                    OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
+                                    rightClickFileMenu.add("Open").setAction(open);
+                                    OpenWithAction openWith = new OpenWithAction("FilePanel", list[sourceIndex]);
+                                    rightClickFileMenu.add("Open with...").setAction(openWith);
+
+                                    JComponent jc = (JComponent) e.getSource();
+                                    rightClickFileMenu.show(jc, e.getX(), e.getY());
+
+                                    /* TODO apply selected operation to all selected FilePanels */
+                                }
                             }
                         }
                     }
-                    /* If the right click was on a selected FilePanel, don't
-                    select/deselect anything. Nothing else needs to be done. */
-                    /* Configure the popup menu */
-                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
-                    
-                    /* Add options to the menu (open, open with, rename, etc...) */
-                    OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
-                    rightClickFileMenu.add("Open").setAction(open);
-                    OpenWithAction openWith = new OpenWithAction("FilePanel",list[sourceIndex]);
-                    rightClickFileMenu.add("Open with...").setAction(openWith);
-                    
-                    JComponent jc = (JComponent) e.getSource();
-                    rightClickFileMenu.show(jc,e.getX(),e.getY());
-                    
-                    /* TODO apply selected operation to all selected FilePanels */
-                }
+                });
+
+                t.setRepeats(false);
+                t.start();
             }
         }
     }
