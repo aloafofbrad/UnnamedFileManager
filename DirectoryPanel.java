@@ -200,14 +200,18 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
 
                 wasDoubleClick = true;
             } else {
+                // This is how fast the double click is
                 int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
-                System.out.println("Single Click");
+
+                // Create timer to interval of clickInterval to call ActionListener to do the single click if wasDoubleClick is false
+                // Basically, if the time between clicks is greater than clickInterval, it will register the single click rather than double click
                 t = new Timer(clickInterval, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e1) {
                         if(wasDoubleClick){
                             wasDoubleClick = false;
                         } else {
+                            System.out.println("Single Click");
                             // Single left click
                             if (BUTTON == java.awt.event.MouseEvent.BUTTON1) {
                     /* If this was any kind of click on the DirectoryPanel, deselect
@@ -315,6 +319,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     }
                 });
 
+                // The timer does not repeat
                 t.setRepeats(false);
                 t.start();
             }
