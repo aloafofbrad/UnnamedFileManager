@@ -165,6 +165,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 FilePanels. The following condition is equivalent to:
                  "if (the e.getSource() == this)"
                 */
+                System.out.println("Double Click");
                 if (sourceIndex == -1){
                     for (int i = 0;i < list.length;i++){
                         list[i].select(false);
@@ -196,10 +197,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                         open.actionPerformed(new ActionEvent(e.getSource(),0,""));
                     }
                 }
-            }
 
-            else {
+                wasDoubleClick = true;
+            } else {
                 int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+                System.out.println("Single Click");
                 t = new Timer(clickInterval, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e1) {
