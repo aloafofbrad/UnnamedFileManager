@@ -24,7 +24,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     /* Vertical gap that exists between the top of one FilePanel and the top of
     another, measured in pixels. There's no horizontal equivalent to this since
     we're only currently displaying files in a vertical list view. */
-    private final int VERTICAL_FP_GAP = 25;
+    private int VERTICAL_FP_GAP = 25;
+    private final int HORIZONTAL_FP_GAP = 0;
     /**/
     private Navigator fileNavigator;
 
@@ -50,14 +51,17 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         
         /* Set up the DirectoryPanel's GUI components. If the directory is empty
         or nonexistent, none will be generated, leaving the DirectoryPanel blank. */
+        layout = new SpringLayout();
+        setLayout(layout);
         try{
             list = new FilePanel[files.length];
-            layout = new SpringLayout();
-            setLayout(layout);
             int i;
             for (i = 0;i < files.length;i++){
                 list[i] = new FilePanel(files[i],this);
-                layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
+                if (i == 0){
+                    VERTICAL_FP_GAP = list[i].getPreferredSize().height;
+                }
+                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
                 layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
                 this.add(list[i]);
             }
@@ -358,11 +362,16 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             list = new FilePanel[files.length];
             for (i = 0;i < files.length;i++){
                 list[i] = new FilePanel(files[i],this);
-                layout.putConstraint(SpringLayout.WEST, list[i], 5, SpringLayout.WEST, this);
+                if (i == 0){
+                    VERTICAL_FP_GAP = list[i].getPreferredSize().height;
+                }
+                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
                 layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
                 this.add(list[i]);
             }
             System.out.println(i + " FilePanels generated / " + files.length + " files");
+            int width = this.getPreferredSize().width;
+            size = new Dimension(width,files.length*VERTICAL_FP_GAP);
         }
         /* Caught when unable to list contents/read data of a directory, but the
         file still exists (files.length will be null, causing the exception).
@@ -372,7 +381,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             System.out.println("NPE\n" + npe.getMessage());
             list = new FilePanel[1];
             list[0] = new FilePanel(npe.getMessage(),this);
-            layout.putConstraint(SpringLayout.WEST,list[0],5,SpringLayout.WEST,this);
+            layout.putConstraint(SpringLayout.WEST,list[0],HORIZONTAL_FP_GAP,SpringLayout.WEST,this);
             layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
             this.add(list[0]);
         }
@@ -380,11 +389,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             System.out.println("Exception\n" + e.getMessage());
             list = new FilePanel[1];
             list[0] = new FilePanel(e.getMessage(),this);
-            layout.putConstraint(SpringLayout.WEST,list[0],5,SpringLayout.WEST,this);
+            layout.putConstraint(SpringLayout.WEST,list[0],HORIZONTAL_FP_GAP,SpringLayout.WEST,this);
             layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
             this.add(list[0]);
         }
         
+        this.setPreferredSize(size);
         revalidate();
         doLayout();
     }
