@@ -122,8 +122,9 @@ public class FilePanel extends JPanel{
         else{
             // Update the icon
             this.icon = new ImageIcon("src/main/java/icons/file.png",path);
+            
             // Show & set text for fields based on file data. Credit to Dan Tran
-            this.size.setText(Long.toString(self.length()));
+            this.configureSize(self.length());
             this.size.setVisible(true);
         }
         // Update the icon
@@ -150,6 +151,47 @@ public class FilePanel extends JPanel{
         catch(IOException e){
             System.out.println(e.getMessage());
             this.dateCreated.setText("null");
+        }
+    }
+    
+    /**
+     * @author Dan Tran
+     * @author Bradley Nickle
+     * @param length 
+     */
+    public void configureSize(Long length){
+        if (!isDirectory){
+            String theSize = length.toString();
+            Long k = new Long("1000");
+            Long M = new Long("1000000");
+            Long G = new Long("1000000000");
+            Long T = new Long("1000000000000");
+            Long P = new Long("1000000000000000");
+            if (length < k && length >= 0){
+                theSize += " B";
+                this.size.setToolTipText(theSize + " bytes");
+            } else if (length < M && length >= k){
+                length /= k;
+                theSize = length.toString();
+                theSize += " KB";
+                this.size.setToolTipText(theSize + " kilobytes");
+            } else if (length < G && length >= M){
+                length /= M;
+                theSize = length.toString();
+                theSize += " MB";
+                this.size.setToolTipText(theSize + " megabytes");
+            } else if (length < T && length >= G){
+                length /= G;
+                theSize = length.toString();
+                theSize += " GB";
+                this.size.setToolTipText(theSize + " gigabytes");
+            } else if (length >= T){
+                length /= T;
+                theSize = length.toString();
+                theSize += " TB";
+                this.size.setToolTipText(theSize + " terabytes");
+            }
+            this.size.setText(theSize);
         }
     }
     
