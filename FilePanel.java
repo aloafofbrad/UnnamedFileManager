@@ -19,6 +19,10 @@ public class FilePanel extends JPanel{
     // Tracks whether or not this file should be selected.
     private boolean isSelected,isDirectory;
     private String absolutePath;
+    // Layout manager & layout constants
+    private SpringLayout layout;
+    private final int[] HORIZONTAL_GAPS = {24,192,128,128};
+    private final int VERTICAL_GAP = 4;
     
     /**
      * Default constructor for FilePanels.
@@ -27,7 +31,9 @@ public class FilePanel extends JPanel{
      *           FilePanel and its components
      */
     public FilePanel(String fn,DirectoryPanel dp){
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+        int sum = 4;
+        layout = new SpringLayout();
+        setLayout(layout);
         
         /* Configure the components for all fields relevant to the file represented
         by this FilePanel */
@@ -36,31 +42,47 @@ public class FilePanel extends JPanel{
         icon = new ImageIcon("src/main/java/icons/file.png",fn);
         pic = new JLabel(icon);
         pic.addMouseListener(dp);
+        layout.putConstraint(SpringLayout.WEST,pic,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,pic,VERTICAL_GAP,SpringLayout.NORTH,this);
+        sum += HORIZONTAL_GAPS[0];
         add(pic);
         
         // Configure name
         filename = new JLabel(fn);
         filename.addMouseListener(dp);
         filename.setToolTipText(fn);
+        layout.putConstraint(SpringLayout.WEST,filename,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,filename,VERTICAL_GAP,SpringLayout.NORTH,this);
+        sum += HORIZONTAL_GAPS[1];
         add(filename);
         
         // Configure size
         size = new JLabel("null");
         size.setToolTipText("Size in bytes");
         size.addMouseListener(dp);
+        layout.putConstraint(SpringLayout.WEST,size,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,size,VERTICAL_GAP,SpringLayout.NORTH,this);
+        sum += HORIZONTAL_GAPS[2];
         add(size);
         
         // Configure date created
         dateCreated = new JLabel("null");
         dateCreated.addMouseListener(dp);
         dateCreated.setToolTipText("Date Created");
+        layout.putConstraint(SpringLayout.WEST,dateCreated,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,dateCreated,VERTICAL_GAP,SpringLayout.NORTH,this);
+        sum += HORIZONTAL_GAPS[3];
         add(dateCreated);
         
         // Configure date modified
         dateModified = new JLabel("null");
         dateModified.addMouseListener(dp);
         dateModified.setToolTipText("Date Modified");
+        layout.putConstraint(SpringLayout.WEST,dateModified,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,dateModified,VERTICAL_GAP,SpringLayout.NORTH,this);
         add(dateModified);
+        
+        this.setPreferredSize(new Dimension(sum*2,25));
         
         // Configure the file, filling in the fields with appropriate names and dates
         absolutePath = dp.getCurrentPath();
@@ -77,11 +99,11 @@ public class FilePanel extends JPanel{
      * @author Dan Tran
      */
     private void configureFile(String path){        
-        // Make sure that the path is properly delimited by "\\"
+        // Make sure that the path is properly delimited by "/" or "\\"
         int last = path.length() - 1;
         char delimiter = '\\';
-        if (path.charAt(last) != delimiter){
-            path = path + "\\";
+        if (path.charAt(last) != delimiter && path.charAt(last) != '\\'){
+            path = path + "/";
         }
         
         /* self is the File represented by the FilePanel. Not to be confused with
