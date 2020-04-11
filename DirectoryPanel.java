@@ -28,7 +28,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     /**/
     private Navigator fileNavigator;
 
-    Timer t;
+    private Timer t;
 
     boolean wasDoubleClick;
     
