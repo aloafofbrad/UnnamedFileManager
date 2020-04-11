@@ -62,11 +62,15 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        searchBar.addKeyListener(this);
        add(searchBar); 
        
+       // Adjust button heights to match the address bar!
        int height = searchBar.getPreferredSize().height;
        int width = backButton.getPreferredSize().width;
        backButton.setPreferredSize(new Dimension(width,height));
        width = forwardButton.getPreferredSize().width;
        forwardButton.setPreferredSize(new Dimension(width,height));
+       
+       // Set a border
+        setBorder(BorderFactory.createLineBorder(new Color(128,128,128)));
    }
 
     /**
