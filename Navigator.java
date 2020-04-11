@@ -12,8 +12,11 @@ import java.util.ArrayList;
  * @author Bradley Nickle
  */
 public class Navigator extends Subject{
+    // Index representing the currently displayed directory.
     private int index;
+    // A list of all directories visitable through the use of the foward/back buttons.
     private ArrayList<String> history;
+    // The directory the Navigator started at. Cannot use "back" when root == current.
     private String root;
     
     /**
@@ -29,15 +32,29 @@ public class Navigator extends Subject{
     
     /**
      * Parameterized constructor for Navigators.
-     * Intended to be used with a default starting directory.
+     * Intended to be used with a default starting directory. Will check if a
+     * directory exists before visiting it.
      * For example: Navigator n = new Navigator("C:/Users/Brad/");
-     * @param current 
+     * @param current The directory to attempt to visit.
      */
     public Navigator(String current){
         super();
         history = new ArrayList<String>();
-        add(current);
-        root = current;
+        
+        // Try to visit current.  If it doesn't work, try some root directories.
+        if (canVisit(current)){
+            forward(current);
+        }
+        else if (canVisit("C:/")){
+            forward("C:/");
+        }
+        else if (canVisit("/")){
+            forward("/");
+        }
+        else{
+            index = -1;
+            root = null;
+        }
     }
     
     /**
