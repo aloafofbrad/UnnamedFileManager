@@ -61,6 +61,12 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        searchBar.addMouseListener(this);
        searchBar.addKeyListener(this);
        add(searchBar); 
+       
+       int height = searchBar.getPreferredSize().height;
+       int width = backButton.getPreferredSize().width;
+       backButton.setPreferredSize(new Dimension(width,height));
+       width = forwardButton.getPreferredSize().width;
+       forwardButton.setPreferredSize(new Dimension(width,height));
    }
 
     /**
