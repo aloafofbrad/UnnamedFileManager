@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.attribute.*;
 import java.text.SimpleDateFormat;
@@ -155,41 +156,55 @@ public class FilePanel extends JPanel{
     }
     
     /**
+     * Adjusts the displayed file size to a user-friendly approximation.
+     * Instead of "1,234 kilobytes", it displays "1 kb".
+     * Also adjusts the tooltip of this.size
      * @author Dan Tran
      * @author Bradley Nickle
      * @param length 
      */
     public void configureSize(Long length){
+        // If it's a directory, we don't need to do any work.
         if (!isDirectory){
+            BigDecimal filesize = new BigDecimal(length);
             String theSize = length.toString();
-            Long k = new Long("1000");
-            Long M = new Long("1000000");
-            Long G = new Long("1000000000");
-            Long T = new Long("1000000000000");
-            Long P = new Long("1000000000000000");
-            if (length < k && length >= 0){
+            BigDecimal k = new BigDecimal("1000");
+            BigDecimal M = new BigDecimal("1000000");
+            BigDecimal G = new BigDecimal("1000000000");
+            BigDecimal T = new BigDecimal("1000000000000");
+            
+            // If the file's less than a kilobyte, represent it in bytes.
+            if (filesize.compareTo(k) == -1){
                 theSize += " B";
-                this.size.setToolTipText(theSize + " bytes");
-            } else if (length < M && length >= k){
-                length /= k;
-                theSize = length.toString();
+                this.size.setToolTipText(filesize.toString() + " bytes");
+            }
+            // If the file's less than a megabyte, represent it in kilobytes.
+            else if (filesize.compareTo(M) == -1){
+                filesize = filesize.divide(k);
+                theSize = filesize.toString();
                 theSize += " KB";
-                this.size.setToolTipText(theSize + " kilobytes");
-            } else if (length < G && length >= M){
-                length /= M;
-                theSize = length.toString();
+                this.size.setToolTipText(filesize.toString() + " kilobytes");
+            }
+            // If the file's less than a gigabyte, represent it in megabytes.
+            else if (filesize.compareTo(G) == -1){
+                filesize = filesize.divide(M);
+                theSize = filesize.toString();
                 theSize += " MB";
-                this.size.setToolTipText(theSize + " megabytes");
-            } else if (length < T && length >= G){
-                length /= G;
-                theSize = length.toString();
+                this.size.setToolTipText(filesize.toString() + " megabytes");
+            }
+            // If the file's less than a terabyte, represent it in gigabytes.
+            else if (filesize.compareTo(T) == -1){
+                filesize = filesize.divide(G);
+                theSize = filesize.toString();
                 theSize += " GB";
-                this.size.setToolTipText(theSize + " gigabytes");
-            } else if (length >= T){
-                length /= T;
-                theSize = length.toString();
+                this.size.setToolTipText(filesize.toString() + " gigabytes");
+            }
+            // If the file's 1 or more terabytes, represent it in terabytes.
+            else {
+                filesize = filesize.divide(T);
+                theSize = filesize.toString();
                 theSize += " TB";
-                this.size.setToolTipText(theSize + " terabytes");
+                this.size.setToolTipText(filesize.toString() + " terabytes");
             }
             this.size.setText(theSize);
         }
