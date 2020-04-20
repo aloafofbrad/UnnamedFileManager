@@ -57,8 +57,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         setLayout(layout);
         try{
             list = new FilePanel[files.length];
-            int i;
-            for (i = 0;i < files.length;i++){
+            for (int i = 0; i < files.length;i++){
                 list[i] = new FilePanel(files[i],this);
                 if (i == 0){
                     VERTICAL_FP_GAP = list[i].getPreferredSize().height;
@@ -204,7 +203,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                 wasDoubleClick = true;
             } else {
                 // This is how fast the double click is
-                int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 6;
+                int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 3;
 
                 // Create timer to interval of clickInterval to call ActionListener to do the single click if wasDoubleClick is false
                 // Basically, if the time between clicks is greater than clickInterval, it will register the single click rather than double click
@@ -227,7 +226,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
 
                                 /* If file pane was initially selected and the filename was single
                                 clicked on the second time, rename */
-                                else if (list[sourceIndex].isSelected() == true && e.getSource() == list[sourceIndex].getFileNameLabel()) {
+                                else if (list[sourceIndex].isSelected() && e.getSource() == list[sourceIndex].getFileNameLabel()) {
                                     String newName = JOptionPane.showInputDialog(
                                             null,
                                             "Input New Name",
@@ -250,6 +249,15 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                                     /* If the user didn't cancel, rename the file.
                                     newName == null if the user cancelled. */
                                     if (newName != null && !newName.isEmpty()) {
+                                        String extension = "";
+                                        File source = new File(list[sourceIndex].getFullFileName());
+
+                                        if(!list[sourceIndex].isDirectory()){
+                                            extension = list[sourceIndex].getFileName().substring(list[sourceIndex].getFileName().lastIndexOf("."));
+                                        }
+
+                                        newName += extension;
+                                        source.renameTo(new File(currentPath + '\\' + newName));
                                         list[sourceIndex].setText(newName);
                                     }
                                 }

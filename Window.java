@@ -34,7 +34,7 @@ public class Window extends JFrame{
         setTitle("File Manager " + version);
         
         // Set up test data NOTE this will eventually be replaced with actual file data
-        String path = "C:/";
+        String path = "C:\\Users\\ianho\\Desktop";
         
         // Initialize the navigator
         Navigator nav = new Navigator(path);
