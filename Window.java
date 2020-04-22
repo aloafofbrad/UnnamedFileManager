@@ -52,13 +52,14 @@ public class Window extends JFrame{
         Navigator nav = new Navigator(path);
         
         // Initialize the GUI components
-        centerPanel = new DirectoryPanel(nav);
-        upperToolbar = new FileManagerToolbar(nav);
-        columnNames = new ColumnNames();
-        ui = new FileManagerUI(centerPanel,upperToolbar,columnNames);
+        DirectoryPanel centerPanel = new DirectoryPanel(nav);
+        FileManagerToolbar upperToolbar = new FileManagerToolbar(nav);
+        ColumnNames columnNames = new ColumnNames();
+        FileManagerUI ui = new FileManagerUI(centerPanel,upperToolbar, columnNames);
         
         // Set up the GUI
         setContentPane(ui);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
         configureCloseOperations();
@@ -83,7 +84,7 @@ public class Window extends JFrame{
                     file = new File("sizePosition.txt");
                     if (!file.exists()) {
                         file.createNewFile();
-                    }
+}
                     
                     /* This line is for testing. It should tell you where the program
                     is saving sizePosition.txt to. */
