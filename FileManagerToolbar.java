@@ -89,31 +89,28 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
         }
     }
 
+    /**
+     * Overridden MouseListener method.
+     * Used to process clicks for backButton, forwardButton, and more.
+     * @param e the event to be processed
+     * @author Bradley Nickle
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
-        /* In general, this is what actionPerformed() should look like:
-       if (e.getSource() == myComponent_1){...;}
-       if (e.getSource() == myComponent_2){...;}
-       if (e.getSource() == myComponent_3 && someCondition){...;}
-       ...
-       if (e.getSource() == myComponent_n){...;} */
        if (e.getSource() == backButton){
            // Tell the Navigator to go back
            if (nav.size() > 1 && !nav.isAtBeginning()){
                nav.back();
            }
        }
-       if (e.getSource() == forwardButton){
+       else if (e.getSource() == forwardButton){
            /* Tell the Navigator to go forward (to a directory that is in the
            history) */
            if (nav.size() > 1 && !nav.isAtEnd()){
                nav.forward();
            }
        }
-       if (e.getSource() == addressBar){
-       }
-       if (e.getSource() == searchBar){
-       }
+       // TODO add in support for sorting.
     }
     
     /**
@@ -122,9 +119,13 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
      */
     @Override
     public void keyPressed(KeyEvent e) {
+        // Check that the "Enter" or "Return" key was actually pressed.
         if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            
+            // If the source was the address bar, try to change the directory.
             if (e.getSource() == addressBar){
                 String potentialDirectory = addressBar.getText();
+                
                 /* Check if potentialDirectory is a directory before moving to it.
                 Then, check if it is visitable. */
                 if (nav.isDirectory(potentialDirectory)){
@@ -133,8 +134,16 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
                     }
                 }
             }
-            if (e.getSource() == searchBar){
-                // TODO search for a file
+            
+            // If the source was the search bar, try to execute a search.
+            else if (e.getSource() == searchBar){
+                String search = searchBar.getText();
+                
+                /* Check that the search bar's text contains an actual search key
+                before searching. If it was, set it as the search key. */
+                if (search != null && !search.equals("")){
+                    nav.setSearchKey(search);
+                }
             }
         }
     }
