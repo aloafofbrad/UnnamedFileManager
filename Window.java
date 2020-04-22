@@ -55,7 +55,7 @@ public class Window extends JFrame{
         DirectoryPanel centerPanel = new DirectoryPanel(nav);
         FileManagerToolbar upperToolbar = new FileManagerToolbar(nav);
         ColumnNames columnNames = new ColumnNames();
-        FileManagerUI ui = new FileManagerUI(centerPanel,upperToolbar, columnNames);
+        FileManagerUI ui = new FileManagerUI(nav,centerPanel,upperToolbar, columnNames);
         
         // Set up the GUI
         setContentPane(ui);
