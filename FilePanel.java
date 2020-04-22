@@ -157,7 +157,7 @@ public class FilePanel extends JPanel{
     
     /**
      * Adjusts the displayed file size to a user-friendly approximation.
-     * Instead of "1,234 kilobytes", it displays "1 kb".
+     * Instead of "1234", it displays "1.234 kb".
      * Also adjusts the tooltip of this.size
      * @author Dan Tran
      * @author Bradley Nickle
