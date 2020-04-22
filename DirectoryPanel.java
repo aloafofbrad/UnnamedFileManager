@@ -408,6 +408,19 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         this.setPreferredSize(size);
         revalidate();
         doLayout();
+        
+        // Execute a search
+        String searchKey = fileNavigator.getSearchKey();
+        if (list.length > 0 && searchKey != null && !searchKey.equals("")){
+            for (i = 0;i < list.length;i++){
+                if (searchKey.equals(list[i].getFileName())){
+                    list[i].select(true);
+                }
+                else{
+                    list[i].select(false);
+                }
+            }
+        }
     }
 
     /**
