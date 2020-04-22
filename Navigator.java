@@ -18,6 +18,7 @@ public class Navigator extends Subject{
     private ArrayList<String> history;
     // The directory the Navigator started at. Cannot use "back" when root == current.
     private String root;
+    private String searchKey;
     
     /**
      * Default constructor for Navigators.
@@ -28,6 +29,7 @@ public class Navigator extends Subject{
         history = new ArrayList<String>();
         index = -1;
         root = null;
+        searchKey = null;
     }
     
     /**
@@ -55,6 +57,7 @@ public class Navigator extends Subject{
             index = -1;
             root = null;
         }
+        searchKey = null;
     }
     
     /**
@@ -309,5 +312,26 @@ public class Navigator extends Subject{
      */
     public int size(){
         return history.size();
+    }
+    
+    /**
+     * Set a search key to be used in a search.
+     * Intended to be passed from FileManagerToolbar to DirectoryPanel.
+     * @param s the search key
+     * @author Bradley Nickle
+     */
+    public void setSearchKey(String s){
+        searchKey = s;
+        notifyObservers();
+    }
+    
+    /**
+     * Get a search key in order to execute a search.
+     * Intended to be called in DirectoryPanel.update()
+     * @author Bradley Nickle
+     * @return the search key
+     */
+    public String getSearchKey(){
+        return searchKey;
     }
 }
