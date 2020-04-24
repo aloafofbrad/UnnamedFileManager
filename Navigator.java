@@ -105,6 +105,9 @@ public class Navigator extends Subject{
             index++;
         }
         
+        // Set searchKey to null so no searches are executed in the next move.
+        setSearchKey(null);
+        
         /* Notify DirectoryPanel and FileManagerToolbar that the state may have
         changed. */
         notifyObservers();
@@ -145,6 +148,9 @@ public class Navigator extends Subject{
         */
         add(next);
         
+        // Set searchKey to null so no searches are executed in the next move.
+        setSearchKey(null);
+        
         /* Notify DirectoryPanel and FileManagerToolbar that the state may have
         changed. */
         notifyObservers();
@@ -159,6 +165,9 @@ public class Navigator extends Subject{
         if (history.size() > 1 && index > first){
             index--;
         }
+        
+        // Set searchKey to null so no searches are executed in the next move.
+        setSearchKey(null);
         
         /* Notify DirectoryPanel and FileManagerToolbar that the state may have
         changed. */
@@ -316,7 +325,8 @@ public class Navigator extends Subject{
     
     /**
      * Set a search key to be used in a search.
-     * Intended to be passed from FileManagerToolbar to DirectoryPanel.
+     * Intended to be called from FileManagerToolbar to DirectoryPanel, or in
+     * 
      * @param s the search key
      * @author Bradley Nickle
      */
@@ -333,5 +343,14 @@ public class Navigator extends Subject{
      */
     public String getSearchKey(){
         return searchKey;
+    }
+    
+    /**
+     * Forces update() to be called on all observers.
+     * Intended for using when changes have been made to the current directory.
+     * @author Bradley Nickle
+     */
+    public void refresh(){
+        notifyObservers();
     }
 }
