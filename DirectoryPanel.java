@@ -5,7 +5,8 @@ import java.io.File;
 
 /**
  * Modified JPanel that will display the contents of a directory (its files and
- * subdirectories).
+ * subdirectories). In addition, it also allows the user to interact with the
+ * files, which are graphically represented as FilePanels.
  * @author Bradley Nickle
  */
 public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObserver {
@@ -366,7 +367,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             list[i].setVisible(false);
             this.remove(list[i]);
         }
-        revalidate();
         
         // Set up FilePanels for the new directory
         try{
@@ -409,16 +409,28 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         revalidate();
         doLayout();
         
-        // Execute a search.
+        // If list isn't empty and searchKey is valid, search.
         String searchKey = fileNavigator.getSearchKey();
-        if (list.length > 0 && searchKey != null && !searchKey.equals("")){
-            for (i = 0;i < list.length;i++){
-                if (searchKey.equals(list[i].getFileName())){
-                    list[i].select(true);
-                }
-                else{
-                    list[i].select(false);
-                }
+        if (list.length > 0 && searchKey != null){
+            search(searchKey);
+        }
+    }
+    
+    /**
+     * Linear search for a specific filename in the current directory.
+     * Does not return anything, but calls FilePanel.select(true) on any matches.
+     * This highlights any FilePanels whose filenames match.
+     * Also calls select(false) on any non-matches, unhighlighting them.
+     * @param searchKey the filename to be searched for
+     * @author Bradley Nickle
+     */
+    public void search(String searchKey){
+        for (int i = 0;i < list.length;i++){
+            if (searchKey.equals(list[i].getFileName())){
+                list[i].select(true);
+            }
+            else{
+                list[i].select(false);
             }
         }
     }
