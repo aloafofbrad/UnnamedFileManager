@@ -48,7 +48,7 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
 
        // Configure address bar
        addressBar = new JTextField(16);
-       addressBar.setToolTipText("Enter a file path");
+       addressBar.setToolTipText("Enter a path");
        addressBar.setText(current);
        addressBar.addMouseListener(this);
        addressBar.addKeyListener(this);
@@ -141,7 +141,7 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
                 
                 /* Check that the search bar's text contains an actual search key
                 before searching. If it was, set it as the search key. */
-                if (search != null && !search.equals("")){
+                if (search != null){
                     nav.setSearchKey(search);
                 }
             }
