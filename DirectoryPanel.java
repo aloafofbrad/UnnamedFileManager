@@ -321,9 +321,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                                     OpenWithAction openWith = new OpenWithAction("FilePanel", list[sourceIndex]);
                                     rightClickFileMenu.add("Open with...").setAction(openWith);
                                     // TODO rename
-                                    // TODO move
-                                    // TODO copy
-                                    // TODO delete
+                                    MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
+                                    rightClickFileMenu.add("Move").setAction(moveTo);
+                                    CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
+                                    rightClickFileMenu.add("Copy").setAction(copyTo);
+                                    DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
+                                    rightClickFileMenu.add("Delete").setAction(delete);
+                                   //currentdirectory.update();
+                                    
 
                                     JComponent jc = (JComponent) e.getSource();
                                     rightClickFileMenu.show(jc, e.getX(), e.getY());
