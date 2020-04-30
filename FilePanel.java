@@ -116,7 +116,7 @@ public class FilePanel extends JPanel{
         if (this.isDirectory){
             // Update the icon
             this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
-            
+            this.size.setText("0");
             // Hide the size of a directory.
             this.size.setVisible(false);
         }
