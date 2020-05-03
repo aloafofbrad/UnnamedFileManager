@@ -6,40 +6,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- * A list of visited directories.
+ * An object that handles a list of visited directories, as well as executing search
+ * and sort functions between FileManagerToolbar and DirectoryPanel.
  * Note that it is unique to each instance of the File Manager; it does not save
  * any history once its memory is returned to the system.
  * @author Bradley Nickle
  */
-public class Navigator extends Subject{
+public class Manager extends Subject{
     // Index representing the currently displayed directory.
     private int index;
     // A list of all directories visitable through the use of the foward/back buttons.
     private ArrayList<String> history;
-    // The directory the Navigator started at. Cannot use "back" when root == current.
+    // The directory the Manager started at. Cannot use "back" when root == current.
     private String root;
     private String searchKey;
-    
-    /**
-     * Default constructor for Navigators.
-     * Intended to be used when no default starting directory is available.
-     */
-    public Navigator(){
-        super();
-        history = new ArrayList<String>();
-        index = -1;
-        root = null;
-        searchKey = null;
-    }
+    private String sortAttribute;
     
     /**
      * Parameterized constructor for Navigators.
      * Intended to be used with a default starting directory. Will check if a
      * directory exists before visiting it.
-     * For example: Navigator n = new Navigator("C:/Users/Brad/");
+     * For example: Manager m = new Manager("C:/Users/Brad/");
      * @param current The directory to attempt to visit.
      */
-    public Navigator(String current){
+    public Manager(String current){
         super();
         history = new ArrayList<String>();
         
@@ -58,6 +48,7 @@ public class Navigator extends Subject{
             root = null;
         }
         searchKey = null;
+        sortAttribute = null;
     }
     
     /**
@@ -325,19 +316,18 @@ public class Navigator extends Subject{
     
     /**
      * Set a search key to be used in a search.
-     * Intended to be called from FileManagerToolbar to DirectoryPanel, or in
-     * 
+     * Intended to be called from FileManagerToolbar to DirectoryPanel.
      * @param s the search key
      * @author Bradley Nickle
      */
     public void setSearchKey(String s){
         searchKey = s;
-        notifyObservers();
+        executeSearch();
     }
     
     /**
      * Get a search key in order to execute a search.
-     * Intended to be called in DirectoryPanel.update()
+     * Intended to be called in DirectoryPanel.search()
      * @author Bradley Nickle
      * @return the search key
      */
@@ -346,11 +336,23 @@ public class Navigator extends Subject{
     }
     
     /**
-     * Forces update() to be called on all observers.
-     * Intended for using when changes have been made to the current directory.
+     * Set an attribute to sort by.
+     * Intended to be called from FileManagerToolbar to DirectoryPanel.
+     * @param s the sort attribute
      * @author Bradley Nickle
      */
-    public void refresh(){
-        notifyObservers();
+    public void setSortAttribute(String s){
+        sortAttribute = s;
+        executeSort();
+    }
+    
+    /**
+     * Get a search key in order to execute a search.
+     * Intended to be called in DirectoryPanel.sort()
+     * @author Bradley Nickle
+     * @return the sort attribute
+     */
+    public String getSortAttribute(){
+        return sortAttribute;
     }
 }
