@@ -308,7 +308,19 @@ public class FilePanel extends JPanel{
             this.dateCreated.setText("null");
             return -1;
         }
-        
+    }
+    
+    public String getFileType(){
+        if (isDirectory){
+            return "DIR";
+        }
+        String type = filename.getText();
+        int dotIndex = type.lastIndexOf(".");
+        if (dotIndex == -1){
+            return "DIR";
+        }
+        type = type.substring(dotIndex,type.length() - dotIndex);
+        return type;
     }
     
     /**
