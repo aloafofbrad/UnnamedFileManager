@@ -496,7 +496,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         // Sort list
         for (int i = 0; i < list.length; i++) {
             for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getFileName().compareTo(list[j + 1].getFileName()) > 0) {
+                if (list[j].getFileName().toLowerCase().compareTo(list[j + 1].getFileName().toLowerCase()) > 0) {
                     FilePanel temp = list[j];
                     list[j] = list[j + 1];
                     list[j + 1] = temp;
