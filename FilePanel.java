@@ -66,22 +66,22 @@ public class FilePanel extends JPanel{
         sum += HORIZONTAL_GAPS[2];
         add(size);
         
-        // Configure date created
-        dateCreated = new JLabel("null");
-        dateCreated.addMouseListener(dp);
-        dateCreated.setToolTipText("Date Created");
-        layout.putConstraint(SpringLayout.WEST,dateCreated,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,dateCreated,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[3];
-        add(dateCreated);
-        
         // Configure date modified
         dateModified = new JLabel("null");
         dateModified.addMouseListener(dp);
         dateModified.setToolTipText("Date Modified");
         layout.putConstraint(SpringLayout.WEST,dateModified,sum,SpringLayout.WEST,this);
         layout.putConstraint(SpringLayout.NORTH,dateModified,VERTICAL_GAP,SpringLayout.NORTH,this);
+        sum += HORIZONTAL_GAPS[3];
         add(dateModified);
+        
+        // Configure date created
+        dateCreated = new JLabel("null");
+        dateCreated.addMouseListener(dp);
+        dateCreated.setToolTipText("Date Created");
+        layout.putConstraint(SpringLayout.WEST,dateCreated,sum,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,dateCreated,VERTICAL_GAP,SpringLayout.NORTH,this);
+        add(dateCreated);
         
         this.setPreferredSize(new Dimension((int)(sum * 1.5),25));
         
@@ -312,14 +312,14 @@ public class FilePanel extends JPanel{
     
     public String getFileType(){
         if (isDirectory){
-            return "DIR";
+            return "?";
         }
         String type = filename.getText();
         int dotIndex = type.lastIndexOf(".");
         if (dotIndex == -1){
-            return "DIR";
+            return "?";
         }
-        type = type.substring(dotIndex,type.length() - dotIndex);
+        type = type.substring(dotIndex);
         return type;
     }
     
