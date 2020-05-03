@@ -12,7 +12,7 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
    private JButton backButton,forwardButton;
    private JTextField addressBar,searchBar;
    private ButtonGroup sortButtons;
-   private JButton name,type,dateModified,dateCreated;
+   private JButton name,type,size,dateModified,dateCreated;
    /* The Manager */
    private Manager mngr;
    private String current;
@@ -106,6 +106,15 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        add(type);
        hsum_bottom += HGAP + type.getPreferredSize().width;
        
+       size = new JButton("Size");
+       size.setToolTipText("Sort by file size");
+       size.addMouseListener(this);
+       sortButtons.add(size);
+       layout.putConstraint(SpringLayout.WEST,size,hsum_bottom,SpringLayout.WEST,this);
+       layout.putConstraint(SpringLayout.NORTH,size,vsum,SpringLayout.NORTH,this);
+       add(size);
+       hsum_bottom += HGAP + size.getPreferredSize().width;
+       
        dateModified = new JButton("Date Modified");
        dateModified.setToolTipText("Sort by date modified");
        dateModified.addMouseListener(this);
@@ -134,6 +143,8 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        name.setPreferredSize(new Dimension(width,height));
        width = type.getPreferredSize().width;
        type.setPreferredSize(new Dimension(width,height));
+       width = size.getPreferredSize().width;
+       size.setPreferredSize(new Dimension(width,height));
        width = dateModified.getPreferredSize().width;
        dateModified.setPreferredSize(new Dimension(width,height));
        width = dateCreated.getPreferredSize().width;
@@ -187,7 +198,10 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
            // todo make sort by name happen
        }
        else if (e.getSource() == type){
-           // todo make sort by type happen
+           mngr.setSortAttribute(type.getText());
+       }
+       else if (e.getSource() == size){
+           // todo make sort by size happen
        }
        else if (e.getSource() == dateModified){
            // todo make sort by date modified happen
