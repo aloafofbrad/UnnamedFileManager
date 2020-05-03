@@ -125,7 +125,15 @@ public class FilePanel extends JPanel{
             this.icon = new ImageIcon("src/main/java/icons/file.png",path);
             
             // Show & set text for fields based on file data. Credit to Dan Tran
-            this.configureSize(self.length());
+            try{
+                this.configureSize(self.length());
+            }
+            catch (SecurityException se){
+                this.size.setToolTipText("A security error occurred and the file's size could not be read.");
+            }
+            catch (Exception e){
+                this.size.setToolTipText("An error occurred and the file's size could not be read.");
+            }
             this.size.setVisible(true);
         }
         // Update the icon
@@ -141,8 +149,6 @@ public class FilePanel extends JPanel{
             this.dateModified.setText("null");
         }
         
-        // TODO Update the date created
-        //dateCreated.setText(sdf.format(self.))
         BasicFileAttributes attrib;
         try{
             attrib = Files.readAttributes(self.toPath(),BasicFileAttributes.class);
@@ -161,7 +167,7 @@ public class FilePanel extends JPanel{
      * Also adjusts the tooltip of this.size
      * @author Dan Tran
      * @author Bradley Nickle
-     * @param length 
+     * @param length the file's size in bytes
      */
     public void configureSize(Long length){
         // If it's a directory, we don't need to do any work.
@@ -227,6 +233,85 @@ public class FilePanel extends JPanel{
     }
     
     /**
+     * @return The size of the file, as a BigDecimal.
+     *      If the file is a directory, returns 0.
+     *      If a security error occurs, returns -2.
+     *      If any other error occurs, returns -1.
+     */
+    public BigDecimal getFileSize(){
+        if (isDirectory){
+            return new BigDecimal(0);
+        }
+        try{
+            File self = new File(getFullFileName());
+            return new BigDecimal(self.length());
+        }
+        catch (SecurityException e){
+            size.setText("-2");
+            return new BigDecimal(-2);
+        }
+        catch (Exception e){
+            size.setText("-1");
+            return new BigDecimal(-1);
+        }
+    }
+    
+    /**
+     * @return the date of the last modification, represented in milliseconds since
+     *      the epoch.
+     *      If a security error occurs, return -2.
+     *      If any other error occurs, return -1.
+     */
+    public long getDateModified(){
+        try{
+            File self = new File(getFullFileName());
+            return self.lastModified();
+        }
+        catch (SecurityException se){
+            this.dateModified.setText("null");
+            return -2;
+        }
+        catch (Exception e){
+            this.dateModified.setText("null");
+            return -1;
+        }
+    }
+    
+    /**
+     * @return the date of creation, represented in milliseconds since the epoch.
+     *      If the file isn't found, return -4.
+     *      If a security error occurs, return -3.
+     *      If an IO error occurs, return -2.
+     *      If any other error occurs, return -1.
+     */
+    public long getDateCreated(){
+        try{
+            File self = new File(getFullFileName());
+            BasicFileAttributes attrib;
+            attrib = Files.readAttributes(self.toPath(),BasicFileAttributes.class);
+            FileTime created = attrib.creationTime();
+            return created.toMillis();
+        }
+        catch (FileNotFoundException fnf){
+            this.dateCreated.setText("null");
+            return -4;
+        }
+        catch (SecurityException se){
+            this.dateCreated.setText("null");
+            return -3;
+        }
+        catch (IOException ioe){
+            this.dateCreated.setText("null");
+            return -2;
+        }
+        catch (Exception e){
+            this.dateCreated.setText("null");
+            return -1;
+        }
+        
+    }
+    
+    /**
      * @return the name of the file
      */
     public String getFullFileName(){
@@ -238,13 +323,6 @@ public class FilePanel extends JPanel{
      */
     public String getAbsolutePath(){
         return absolutePath;
-    }
-    
-    /**
-     * @return the size of the file in bytes
-     */
-    public int getFileSize(){
-        return Integer.getInteger(size.getText());
     }
     
     // TODO insert Ian's code here
