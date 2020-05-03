@@ -32,9 +32,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     /**/
     private Timer t;
     /**/
-    boolean wasDoubleClick;
-    /**/
-    
+    private boolean wasDoubleClick;
+    /* Represents the attribute the FilePanels are currently sorted by. The 
+    default value is "Name". Accepted values are gotten directly from
+    FileManagerToolbar sort buttons, using their getText() methods. See
+    FileManagerToolbar.mouseClicked() for an example. */
+    private String currentSort;
     
     /**
      * Default constructor for DirectoryPanels.
@@ -51,6 +54,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         currentPath = mngr.getDirectory();
         File currentDirectory = new File(currentPath);
         String[] files = currentDirectory.list();
+        
+        // The files come out of File.list() sorted by name.
+        currentSort = "Name";
         
         /* Set up the DirectoryPanel's GUI components. If the directory is empty
         or nonexistent, none will be generated, leaving the DirectoryPanel blank. */
@@ -121,9 +127,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         return NOSOURCEFOUND;
     }
     
-    // TODO find a place for Brandon's code
-
-
     /**
      * @param s string to be processed
      * @author Ian Ho-Sing-Loy
@@ -190,12 +193,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                         }
                     }
                     else{
-                        /* NOTE this might be a tad hacky. But it runs. If you
-                        can find a better way to do this, you can replace it.
-                        
-                        The TL;DR is that it manually triggers an OpenAction,
-                        which we normally use in the right-click context menu.
-                        -Brad */
+                        /* Open using the same code from the right-click menu, for
+                        consistency. */
                         OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
                         open.actionPerformed(new ActionEvent(e.getSource(),0,""));
                     }
@@ -206,8 +205,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                 // This is how fast the double click is
                 int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 3;
 
-                // Create timer to interval of clickInterval to call ActionListener to do the single click if wasDoubleClick is false
-                // Basically, if the time between clicks is greater than clickInterval, it will register the single click rather than double click
+                /* Create timer to interval of clickInterval to call ActionListener
+                to do the single click if wasDoubleClick is false. Basically, if
+                the time between clicks is greater than clickInterval, it will
+                register a single click rather than a double click. */
                 t = new Timer(clickInterval, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e1) {
@@ -263,19 +264,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                                     }
                                 }
 
-
-                                /* TODO AFTER REQUIREMENTS If this was a shift click on a
-                                FilePanel, select all in the range between previous selection
-                                and current selection indices */
-
-                                /* TODO AFTER REQUIREMENTS If this was a control click on a
-                                FilePanel, toggle its selection boolean. */
-                                /* if (...){
-                                    bool isSelected = list[sourceIndex].isSelected();
-                                    list[sourceIndex].select(!isSelected);
-                                }
-                                */
-
                                 /* If this was not a shift click or control click, deselect all
                                 and select the source of the click. */
                                 else {
@@ -311,36 +299,31 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                                         }
                                     }
                                     /* If the right click was on a selected FilePanel, don't
-                                    select/deselect anything. Nothing else needs to be done. */
-                                    /* Configure the popup menu */
+                                    select/deselect anything. Just configure the right click
+                                    menu. */
                                     JPopupMenu rightClickFileMenu = new JPopupMenu("File");
 
                                     /* Add options to the menu (open, open with, rename, etc...) */
                                     OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
                                     rightClickFileMenu.add("Open").setAction(open);
-                                    OpenWithAction openWith = new OpenWithAction("FilePanel", list[sourceIndex]);
-                                    rightClickFileMenu.add("Open with...").setAction(openWith);
-                                    // TODO rename
                                     MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
                                     rightClickFileMenu.add("Move").setAction(moveTo);
                                     CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
                                     rightClickFileMenu.add("Copy").setAction(copyTo);
                                     DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
                                     rightClickFileMenu.add("Delete").setAction(delete);
-                                   //currentdirectory.update();
-                                    
+
+                                    // TODO update?
 
                                     JComponent jc = (JComponent) e.getSource();
                                     rightClickFileMenu.show(jc, e.getX(), e.getY());
-
-                                    /* TODO apply selected operation to all selected FilePanels */
                                 }
                             }
                         }
                     }
                 });
 
-                // The timer does not repeat
+                // Ensure that the timer does not repeat
                 t.setRepeats(false);
                 t.start();
             }
@@ -453,27 +436,167 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     /**
      * Overridden ManagerObserver method.
      * Calls various functions to sort FilePanels in DirectoryPanel.list by 
-     * various attributes.
+     * various attributes. Then, rearranges the sorted FilePanels on the screen.
+     * No action is necessary if there are fewer than 2 FilePanels, or if the
+     * same sort is run twice in a row, since the list will already be in sorted
+     * order.
      * @param s the Manager triggering the sort.
+     * @author Dan Tran
+     * @author Bradley Nickle
      */
     @Override
     public void sort(Subject s) {
-        /*
-        TODO implement sort code
-        This function can be used as a wrapper to call the functions that will
-        actually execute the sorts. 
-        i.e.
-        if (name) { this.sortByName(); }
-        else if (type) { this.sortByType(); }
-        ...
-        
-        */
+        if (list.length > 1){
+            String newSort = mngr.getSortAttribute();
+            if (!currentSort.equals(newSort)){
+                /*
+                TODO implement code to select which sort to do
+                This function can be used as a wrapper to call the functions that will
+                actually execute the sorts. 
+                i.e.
+                if (name) { this.sortByName(); }
+                else if (type) { this.sortByType(); }
+                ...
+
+                */
+                if (newSort.equals("Type")){
+                    sortByType();
+                }
+                currentSort = newSort;
+            }
+            
+            // After the sorting is done, rearrange the FilePanels on-screen.
+            for (int i = 0; i < list.length; i++) {
+                System.out.println(i + ". " + list[i].getFileName());
+
+                // Remove old graphical constraints for the FilePanel
+                layout.removeLayoutComponent(list[i]);
+
+                // Implement new graphical constraints for the FilePanel
+                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
+                layout.putConstraint(SpringLayout.NORTH, list[i], i * VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+            }
+
+            // Reset the DirectoryPanel
+            revalidate();
+            doLayout();
+        }
     }
     
-    // TODO implement sort by name
-    // TODO implement sort by type
-    // TODO implement sort by dateModified
-    // TODO implement sort by dateCreated
+    /**
+     * Sorts this.list's FilePanels in TODO order by filename.
+     * @author Dan Tran
+     */
+    public void sortByName(){
+        System.out.println("Sorting by name...");
+        for (int i = 0;i < list.length;i++){
+            System.out.println(i + ". " + list[i].getFileName());
+        }
+        
+        // Sort list
+        for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                if (list[j].getFileName().compareTo(list[j + 1].getFileName()) > 0) {
+                    FilePanel temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+            }
+        }
+        System.out.println("Sorted.");
+    }
+    
+    /**
+     * Sorts this.list's FilePanels in TODO order by size.
+     * @author Dan Tran
+     */
+    public void sortBySize(){
+        System.out.println("Sorting by type...");
+        for (int i = 0;i < list.length;i++){
+            System.out.println(i + ". " + list[i].getFileName());
+        }
+        
+        // Sort list
+        for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                if (list[j].getFileSize().compareTo(list[j + 1].getFileSize()) > 0) {
+                    FilePanel temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+            }
+        }
+        System.out.println("Sorted.");
+    }
+    
+    /**
+     * Sorts this.list's FilePanels in TODO order by file extension.
+     * @author Dan Tran
+     */
+    public void sortByType(){
+        System.out.println("Sorting by type...");
+        for (int i = 0;i < list.length;i++){
+            System.out.println(i + ". " + list[i].getFileName());
+        }
+        
+        // Sort list
+        for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                if (list[j].getFileType().compareTo(list[j + 1].getFileType()) > 0) {
+                    FilePanel temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+            }
+        }
+        System.out.println("Sorted.");
+    }
+    
+    /**
+     * Sorts this.list's FilePanels in TODO order by date of last modification.
+     * @author Dan Tran
+     */
+    public void sortByDateModified(){
+        System.out.println("Sorting by date modified...");
+        for (int i = 0;i < list.length;i++){
+            System.out.println(i + ". " + list[i].getFileName());
+        }
+        
+        // Sort list
+        for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                if (list[j].getDateModified() > list[j + 1].getDateModified()) {
+                    FilePanel temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+            }
+        }
+        System.out.println("Sorted.");
+    }
+    
+    /**
+     * Sorts this.list's FilePanels in TODO order by date of creation.
+     * @author Dan Tran
+     */
+    public void sortByDateCreated(){
+        System.out.println("Sorting by type...");
+        for (int i = 0;i < list.length;i++){
+            System.out.println(i + ". " + list[i].getFileName());
+        }
+        
+        // Sort list
+        for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                if (list[j].getDateCreated() > list[j + 1].getDateCreated()) {
+                    FilePanel temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+            }
+        }
+        System.out.println("Sorted.");
+    }
 
     /**
      * Overridden MouseListener method.
