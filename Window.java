@@ -20,7 +20,6 @@ public class Window extends JFrame{
     final private double version = 0.1;
     private DirectoryPanel centerPanel;
     private FileManagerToolbar upperToolbar;
-    private ColumnNames columnNames;
     private FileManagerUI ui;
     /***
      * Start a window.
@@ -46,16 +45,15 @@ public class Window extends JFrame{
         setTitle("File Manager " + version);
         
         // Set up test data NOTE this will eventually be replaced with actual file data
-        String path = "C:/Users/aloaf/Documents/";
+        String path = "C:/Users/aloaf/Documents";
         
-        // Initialize the navigator
-        Navigator nav = new Navigator(path);
+        // Initialize the Manager
+        Manager mngr = new Manager(path);
         
         // Initialize the GUI components
-        DirectoryPanel centerPanel = new DirectoryPanel(nav);
-        FileManagerToolbar upperToolbar = new FileManagerToolbar(nav);
-        ColumnNames columnNames = new ColumnNames();
-        FileManagerUI ui = new FileManagerUI(nav,centerPanel,upperToolbar, columnNames);
+        DirectoryPanel centerPanel = new DirectoryPanel(mngr);
+        FileManagerToolbar upperToolbar = new FileManagerToolbar(mngr);
+        FileManagerUI ui = new FileManagerUI(mngr,centerPanel,upperToolbar);
         
         // Set up the GUI
         setContentPane(ui);
