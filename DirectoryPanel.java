@@ -9,7 +9,7 @@ import java.io.File;
  * files, which are graphically represented as FilePanels.
  * @author Bradley Nickle
  */
-public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObserver {
+public class DirectoryPanel extends JPanel implements MouseListener,ManagerObserver {
     // File path of the current directory; this is the one that will be displayed
     private String currentPath;
     // Contents of the current directory
@@ -28,7 +28,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     private int VERTICAL_FP_GAP = 25;
     private final int HORIZONTAL_FP_GAP = 0;
     /**/
-    private Navigator fileNavigator;
+    private Manager mngr;
     /**/
     private Timer t;
     /**/
@@ -42,13 +42,13 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      * @author Bradley Nickle
      * @author Dan Tran
      */
-    public DirectoryPanel(Navigator n){
-        // Configure & observe fileNavigator
-        fileNavigator = n;
-        fileNavigator.attach(this);
+    public DirectoryPanel(Manager n){
+        // Configure & observe mngr
+        mngr = n;
+        mngr.attach(this);
         
         // Get a list of the current directory's contents
-        currentPath = fileNavigator.getDirectory();
+        currentPath = mngr.getDirectory();
         File currentDirectory = new File(currentPath);
         String[] files = currentDirectory.list();
         
@@ -180,9 +180,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
                     if (list[sourceIndex].isDirectory())
                     {
                         try{
-                            if (fileNavigator.canVisit(list[sourceIndex].getFullFileName())){
-                                fileNavigator.forward(list[sourceIndex].getFullFileName());
-                                currentPath = fileNavigator.getDirectory();
+                            if (mngr.canVisit(list[sourceIndex].getFullFileName())){
+                                mngr.forward(list[sourceIndex].getFullFileName());
+                                currentPath = mngr.getDirectory();
                             }
                         }
                         catch(NullPointerException npe){
@@ -348,10 +348,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     }
     
     /**
-     * Overridden NavigatorObserver method.
+     * Overridden ManagerObserver method.
      * "Refreshes" the directory that is being displayed. This should update any
      * and all FilePanels in the DirectoryPanel.
-     * NOTICE: To be called from Navigator.notifyObservers only!
+     * NOTICE: To be called from Manager.notifyObservers only!
      * @param s the Subject that was updated.
      * @author Dan Tran
      * @author Bradley Nickle
@@ -360,8 +360,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     public void update(Subject s) {
 
         // Move to the new directory
-        File currentDirectory = new File(fileNavigator.getDirectory());
-        currentPath = fileNavigator.getDirectory();
+        File currentDirectory = new File(mngr.getDirectory());
+        currentPath = mngr.getDirectory();
         String[] files = currentDirectory.list();
         
         // Hide & remove old FilePanels
@@ -413,9 +413,16 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
         this.setPreferredSize(size);
         revalidate();
         doLayout();
-        
+    }
+    
+    /**
+     * Overridden ManagerObserver method.
+     * @param s the Manager triggering the search.
+     */
+    @Override
+    public void search(Subject s) {
         // If list isn't empty and searchKey is valid, search.
-        String searchKey = fileNavigator.getSearchKey();
+        String searchKey = mngr.getSearchKey();
         if (list.length > 0 && searchKey != null){
             search(searchKey);
         }
@@ -426,6 +433,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
      * Does not return anything, but calls FilePanel.select(true) on any matches.
      * This highlights any FilePanels whose filenames match.
      * Also calls select(false) on any non-matches, unhighlighting them.
+     * 
+     * Intended to be called by DirectoryPanel.search(Subject).
+     * 
      * @param searchKey the filename to be searched for
      * @author Bradley Nickle
      */
@@ -439,6 +449,31 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
             }
         }
     }
+
+    /**
+     * Overridden ManagerObserver method.
+     * Calls various functions to sort FilePanels in DirectoryPanel.list by 
+     * various attributes.
+     * @param s the Manager triggering the sort.
+     */
+    @Override
+    public void sort(Subject s) {
+        /*
+        TODO implement sort code
+        This function can be used as a wrapper to call the functions that will
+        actually execute the sorts. 
+        i.e.
+        if (name) { this.sortByName(); }
+        else if (type) { this.sortByType(); }
+        ...
+        
+        */
+    }
+    
+    // TODO implement sort by name
+    // TODO implement sort by type
+    // TODO implement sort by dateModified
+    // TODO implement sort by dateCreated
 
     /**
      * Overridden MouseListener method.
@@ -459,6 +494,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
+     * @author Ian Ho-Sing-Loy
      */
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -471,6 +507,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,NavigatorObs
     /**
      * Overridden MouseListener method.
      * @param e the MouseEvent to be processed.
+     * @author Ian Ho-Sing-Loy
      */
     @Override
     public void mouseExited(MouseEvent e) {
