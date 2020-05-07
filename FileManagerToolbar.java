@@ -196,12 +196,13 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        }
        else if (e.getSource() == name){
            // todo make sort by name happen
+           mngr.setSortAttribute(name.getText());
        }
        else if (e.getSource() == type){
            mngr.setSortAttribute(type.getText());
        }
        else if (e.getSource() == size){
-           // todo make sort by size happen
+           mngr.setSortAttribute(size.getText());
        }
        else if (e.getSource() == dateModified){
            // todo make sort by date modified happen

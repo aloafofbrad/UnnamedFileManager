@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class FilePanel extends JPanel{
     // Fields that will represent the file. Declared & instantiated in order from left to right.
-    private JLabel pic,filename,size,dateCreated,dateModified;
+    private JLabel pic,filename,size,dateCreated,dateModified, fileType;
     // An image that will be tied to this.pic.
     private ImageIcon icon;
     // Tracks whether or not this file should be selected.
@@ -22,7 +22,7 @@ public class FilePanel extends JPanel{
     private String absolutePath;
     // Layout manager & layout constants
     private SpringLayout layout;
-    private final int[] HORIZONTAL_GAPS = {24,256,72,128};
+    private final int[] HORIZONTAL_GAPS = {24,256,72,128, 100};
     private final int VERTICAL_GAP = 4;
     
     /**
@@ -56,14 +56,23 @@ public class FilePanel extends JPanel{
         layout.putConstraint(SpringLayout.NORTH,filename,VERTICAL_GAP,SpringLayout.NORTH,this);
         sum += HORIZONTAL_GAPS[1];
         add(filename);
-        
+
+        // Configure type
+        fileType = new JLabel("null");
+        fileType.addMouseListener(dp);
+        fileType.setToolTipText("File Type");
+        layout.putConstraint(SpringLayout.WEST, fileType, sum, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, fileType, VERTICAL_GAP, SpringLayout.NORTH, this);
+        sum += HORIZONTAL_GAPS[2];
+        add(fileType);
+
         // Configure size
         size = new JLabel("null");
         size.setToolTipText("Size in bytes");
         size.addMouseListener(dp);
         layout.putConstraint(SpringLayout.WEST,size,sum,SpringLayout.WEST,this);
         layout.putConstraint(SpringLayout.NORTH,size,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[2];
+        sum += HORIZONTAL_GAPS[3];
         add(size);
         
         // Configure date modified
@@ -72,7 +81,7 @@ public class FilePanel extends JPanel{
         dateModified.setToolTipText("Date Modified");
         layout.putConstraint(SpringLayout.WEST,dateModified,sum,SpringLayout.WEST,this);
         layout.putConstraint(SpringLayout.NORTH,dateModified,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[3];
+        sum += HORIZONTAL_GAPS[4];
         add(dateModified);
         
         // Configure date created
@@ -92,6 +101,8 @@ public class FilePanel extends JPanel{
         // Add a MouseListener & deselect this
         addMouseListener(dp);
         select(false);
+
+        //fileType.setVisible(false);
     }
     
     /**
@@ -115,7 +126,7 @@ public class FilePanel extends JPanel{
         this.isDirectory = self.isDirectory();
         if (this.isDirectory){
             // Update the icon
-            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
+            this.icon = new ImageIcon("icons/folder.png",path);
             
             // Hide the size of a directory.
             this.size.setVisible(false);
@@ -138,6 +149,9 @@ public class FilePanel extends JPanel{
         }
         // Update the icon
         this.pic.setIcon(this.icon);
+
+        // Update the type
+        this.fileType.setText(this.getFileTypeText(this.getFileType()));
         
         // Update the date modified
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
@@ -309,7 +323,12 @@ public class FilePanel extends JPanel{
             return -1;
         }
     }
-    
+
+
+    /**
+     * @author Ian Ho-Sing-Loy
+     * @return file extension of the file
+     * */
     public String getFileType(){
         if (isDirectory){
             return "?";
@@ -321,6 +340,45 @@ public class FilePanel extends JPanel{
         }
         type = type.substring(dotIndex);
         return type;
+    }
+
+    /**
+     * @author Ian Ho-Sing-Loy
+     * @return the text for the file type column associated with the file extension*/
+    /**
+     * @author Ian Ho-Sing-Loy
+     * @param s extension to translate to type column
+     * @return the text for the file type column
+     *
+     * */
+    public String getFileTypeText(String s){
+        if(s.equals(".BIN")){
+            return "BIN File";
+        } else if (s.equals(".MARKER")){
+            return "MARKER File";
+        } else if(s.equals(".img")){
+            return "Disk Image File";
+        } else if (isDirectory) {
+            return "File Folder";
+        } else if(s.equals(".dat")){
+            return "Data File";
+        } else if(s.equals(".txt")){
+            return "Text Document";
+        } else if(s.equals(".pdf")){
+            return "Adobe Acrobat Document";
+        } else if(s.equals(".drawio")){
+            return "DRAWIO File";
+        } else if(s.equals(".msi")){
+            return "Windows Installer Package";
+        } else if(s.equals(".dll")){
+            return "Application extension";
+        } else if (s.equals(".sys")){
+            return "System File";
+        } else if (s.equals(".ini")){
+            return "Configuration Settings";
+        } else {
+            return "Unknown File Type";
+        }
     }
     
     /**

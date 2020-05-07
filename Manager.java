@@ -164,6 +164,10 @@ public class Manager extends Subject{
         changed. */
         notifyObservers();
     }
+
+    public void name(){
+        executeSort();
+    }
     
     /**
      * Checks whether or not a string is an existing directory

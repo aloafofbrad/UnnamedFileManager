@@ -62,6 +62,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         or nonexistent, none will be generated, leaving the DirectoryPanel blank. */
         layout = new SpringLayout();
         setLayout(layout);
+
         try{
             list = new FilePanel[files.length];
             for (int i = 0; i < files.length;i++){
@@ -89,6 +90,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         
         // Set the background color.
         setBackground(Color.white);
+
+        sortByName();
+        refresh();
     }
     
     /**
@@ -433,6 +437,24 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
     }
 
+    public void refresh(){
+        // After the sorting is done, rearrange the FilePanels on-screen.
+        for (int i = 0; i < list.length; i++) {
+            System.out.println(i + ". " + list[i].getFileName());
+
+            // Remove old graphical constraints for the FilePanel
+            layout.removeLayoutComponent(list[i]);
+
+            // Implement new graphical constraints for the FilePanel
+            layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
+            layout.putConstraint(SpringLayout.NORTH, list[i], i * VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+        }
+
+        // Reset the DirectoryPanel
+        revalidate();
+        doLayout();
+    }
+
     /**
      * Overridden ManagerObserver method.
      * Calls various functions to sort FilePanels in DirectoryPanel.list by 
@@ -460,97 +482,148 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
                 */
                 if (newSort.equals("Type")){
-                    sortByType();
+                    this.sortByType();
+                } else if(newSort.equals("Name")){
+                    this.sortByName();
+                } else if (newSort.equals("Size")){
+                    this.sortBySize();
+                } else if (newSort.equals("Date Modified")){
+                    this.sortByDateModified();
+                } else if (newSort.equals("Date Created")){
+                    this.sortByDateCreated();
                 }
                 currentSort = newSort;
             }
             
             // After the sorting is done, rearrange the FilePanels on-screen.
-            for (int i = 0; i < list.length; i++) {
-                System.out.println(i + ". " + list[i].getFileName());
-
-                // Remove old graphical constraints for the FilePanel
-                layout.removeLayoutComponent(list[i]);
-
-                // Implement new graphical constraints for the FilePanel
-                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
-                layout.putConstraint(SpringLayout.NORTH, list[i], i * VERTICAL_FP_GAP, SpringLayout.NORTH, this);
-            }
-
-            // Reset the DirectoryPanel
-            revalidate();
-            doLayout();
+            refresh();
         }
     }
-    
+
+    /**
+     * */
+    public int sortFileDirectory(){
+        int partition = 0;
+
+        for(int i = 0; i < list.length; i++) {
+            if (!list[i].isDirectory() & i != list.length - 1) {
+                for (int j = i + 1; j < list.length; j++) {
+                    if (list[j].isDirectory()) {
+                        FilePanel temp = list[i];
+                        list[i] = list[j];
+                        list[j] = temp;
+                        break;
+                    } else if (!list[j].isDirectory() && j == list.length - 1){
+                        partition = i;
+                        return partition;
+                    }
+                }
+            } else if (i == list.length - 1){
+                partition = i;
+                return partition;
+            }
+        }
+
+        return partition;
+    }
+
     /**
      * Sorts this.list's FilePanels in TODO order by filename.
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
     public void sortByName(){
         System.out.println("Sorting by name...");
-        for (int i = 0;i < list.length;i++){
+        for (int i = 0; i < list.length;i++){
             System.out.println(i + ". " + list[i].getFileName());
         }
-        
-        // Sort list
-        for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getFileName().toLowerCase().compareTo(list[j + 1].getFileName().toLowerCase()) > 0) {
+
+        int partition = this.sortFileDirectory();
+
+        // Directory Sort
+        quickSort(list, 0, partition - 1, 1);
+        /*
+        for(int i = 0; i < partition; i++){
+            for(int j = i + 1; j < partition; j++){
+                if (list[i].getFileName().toLowerCase().compareTo(list[j].getFileName().toLowerCase()) > 0) {
                     FilePanel temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
+                    list[j] = list[i];
+                    list[i] = temp;
+                }
+            }
+        }//*/
+
+        // File Sort
+        quickSort(list, partition, list.length - 1, 1);
+        /*
+        for (int i = partition; i < list.length; i++) {
+            for (int j = i + 1; j < list.length; j++) {
+                if (list[i].getFileName().toLowerCase().compareTo(list[j].getFileName().toLowerCase()) > 0) {
+                    FilePanel temp = list[j];
+                    list[j] = list[i];
+                    list[i] = temp;
                 }
             }
         }
-        System.out.println("Sorted.");
-    }
+        System.out.println("Sorted.");//*/
+    } // Code 1
     
     /**
      * Sorts this.list's FilePanels in TODO order by size.
      * @author Dan Tran
      */
     public void sortBySize(){
-        System.out.println("Sorting by type...");
+        System.out.println("Sorting by Size...");
         for (int i = 0;i < list.length;i++){
             System.out.println(i + ". " + list[i].getFileName());
         }
-        
-        // Sort list
-        for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getFileSize().compareTo(list[j + 1].getFileSize()) > 0) {
+
+        int partition = this.sortFileDirectory();
+
+        // Sort file sizes
+
+        quickSort(list, partition, list.length - 1, 2);
+        /*
+        for (int i = partition; i < list.length; i++) {
+            for (int j = i + 1; j < list.length; j++) {
+                if (list[j].getFileSize().compareTo(list[i].getFileSize()) > 0) {
                     FilePanel temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
+                    list[j] = list[i];
+                    list[i] = temp;
                 }
             }
-        }
+        }//*/
         System.out.println("Sorted.");
-    }
+    } // Code 2
     
     /**
      * Sorts this.list's FilePanels in TODO order by file extension.
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
     public void sortByType(){
         System.out.println("Sorting by type...");
-        for (int i = 0;i < list.length;i++){
+        for (int i = 0; i < list.length; i++){
             System.out.println(i + ". " + list[i].getFileName());
         }
+
+        int partition = this.sortFileDirectory();
+
+        quickSort(list, partition, list.length - 1, 3);
         
         // Sort list
-        for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getFileType().compareTo(list[j + 1].getFileType()) > 0) {
+        /*
+        for (int i = partition; i < list.length; i++) {
+            for (int j = i + 1; j < list.length; j++) {
+                if (list[i].getFileType().toLowerCase().compareTo(list[j].getFileType().toLowerCase()) > 0) {
                     FilePanel temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
+                    list[j] = list[i];
+                    list[i] = temp;
                 }
             }
-        }
+        }//*/
         System.out.println("Sorted.");
-    }
+    } // Code 3
     
     /**
      * Sorts this.list's FilePanels in TODO order by date of last modification.
@@ -573,7 +646,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             }
         }
         System.out.println("Sorted.");
-    }
+    } // Code 4
     
     /**
      * Sorts this.list's FilePanels in TODO order by date of creation.
@@ -596,6 +669,90 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             }
         }
         System.out.println("Sorted.");
+    } // Code 5
+
+    // Sorts the Student pointer array using the "quick sort" algorithm
+    public void quickSort(FilePanel list[], int begin, int end, int code) {
+        // If the begin and end indices are the same, the selection has only one element
+        if (begin != end) {
+            // Record the begin and end indices before using them
+            int startIndex = begin;
+            int endIndex = end;
+            FilePanel pivot;
+            end--;
+
+            // Pivot element recorded
+            pivot = list[endIndex];
+
+            // Keeps looping until the begin and end indices are the same
+            while (end != begin) {
+                // If the beginning element is less than the pivot, the index is incremented
+                if (compare(list[begin], pivot, code) || (equality(list[begin], pivot, code) && equality(list[end], pivot, code))){
+                    begin++;
+
+                    // If the ending element is less than the pivot, the index is decremented
+                } else if ((compare(pivot, list[end], code)) & (begin != end)) { // pivot < roster[end]
+                    end--;
+
+                    // If the ending element is less than pivot
+                    // and the beginning element is more than the pivot,
+                    // the switch is made
+                } else if ((!compare(list[begin], pivot, code)) & (!compare(pivot, list[end], code))) {
+                    switchElements(list, begin, end);
+                }
+            }
+
+            if (compare(pivot, list[end], code)) {
+                switchElements(list, end, endIndex);
+            } else if (end != begin) {
+                switchElements(list, end + 1, endIndex);
+            }
+
+            // If the pivot is at the startIndex, do recursive method only on right set
+            if (begin == startIndex) {
+                quickSort(list, startIndex + 1, endIndex, code);
+                // If the pivot is at the endIndex - 1, do recursive method only on left set
+            } else if (end == endIndex - 1) {
+                quickSort(list, startIndex, endIndex - 1, code);
+                // Do recursive method on both left and right sets from the pivot
+            } else if ((startIndex != endIndex) & (endIndex - startIndex != 1)) {
+                quickSort(list, startIndex, end - 1, code);
+                quickSort(list, end + 1, endIndex, code);
+            }
+        }
+    }
+
+    public void switchElements(FilePanel list[], int element1, int element2) {
+        FilePanel temp = list[element1];
+
+        list[element1] = list[element2];
+        list[element2] = temp;
+    }
+
+    public boolean compare(FilePanel F1, FilePanel F2, int code) {
+        switch (code) {
+            case 1: // Filename
+                return F1.getFileName().toLowerCase().compareTo(F2.getFileName().toLowerCase()) <= 0;
+            case 2: // File size
+                return F1.getFileSize().compareTo(F2.getFileSize()) >= 0;
+            case 3: // File Type
+                return F1.getFileTypeText(F1.getFileType()).toLowerCase().compareTo(F2.getFileTypeText(F2.getFileType()).toLowerCase()) <= 0;
+            default:
+                return false;
+        }
+    }
+
+    public boolean equality(FilePanel F1, FilePanel F2, int code) {
+        switch (code) {
+            case 1: // File name
+                return F1.getFileName().toLowerCase().compareTo(F2.getFileName().toLowerCase()) == 0;
+            case 2: // File size
+                return F1.getFileSize().compareTo(F2.getFileSize()) == 0;
+            case 3: // File type
+                return F1.getFileType().toLowerCase().compareTo(F2.getFileName().toLowerCase()) == 0;
+            default:
+                return false;
+        }
     }
 
     /**
