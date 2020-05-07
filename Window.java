@@ -45,7 +45,8 @@ public class Window extends JFrame{
         setTitle("File Manager " + version);
         
         // Set up test data NOTE this will eventually be replaced with actual file data
-        String path = "C:/Users/aloaf/Documents";
+        //String path = "C:/Users/aloaf/Documents";
+        String path = System.getProperty("user.home");
         
         // Initialize the Manager
         Manager mngr = new Manager(path);
