@@ -195,7 +195,6 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
            }
        }
        else if (e.getSource() == name){
-           // todo make sort by name happen
            mngr.setSortAttribute(name.getText());
        }
        else if (e.getSource() == type){
@@ -205,10 +204,10 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
            mngr.setSortAttribute(size.getText());
        }
        else if (e.getSource() == dateModified){
-           // todo make sort by date modified happen
+           mngr.setSortAttribute(dateModified.getText());
        }
        else if (e.getSource() == dateCreated){
-           // todo make sort by date created happen
+           mngr.setSortAttribute(dateCreated.getText());
        }
        
     }
