@@ -74,7 +74,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                 layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
                 this.add(list[i]);
             }
-            size = new Dimension(300,files.length*VERTICAL_FP_GAP);
+            size = new Dimension(list[0].getPreferredSize().width,files.length*VERTICAL_FP_GAP);
         }
         catch(NullPointerException npe){
             System.out.println(npe.getMessage());
@@ -90,9 +90,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         
         // Set the background color.
         setBackground(Color.white);
-
-        sortByName();
-        refresh();
     }
     
     /**
@@ -437,6 +434,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
     }
 
+    /**
+     * Resets graphical constraints on FilePanels, effectively sorting them on-screen.
+     */
     public void refresh(){
         // After the sorting is done, rearrange the FilePanels on-screen.
         for (int i = 0; i < list.length; i++) {
