@@ -470,30 +470,18 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     public void sort(Subject s) {
         if (list.length > 1){
             String newSort = mngr.getSortAttribute();
-            if (!currentSort.equals(newSort)){
-                /*
-                TODO implement code to select which sort to do
-                This function can be used as a wrapper to call the functions that will
-                actually execute the sorts. 
-                i.e.
-                if (name) { this.sortByName(); }
-                else if (type) { this.sortByType(); }
-                ...
-
-                */
-                if (newSort.equals("Type")){
-                    this.sortByType();
-                } else if(newSort.equals("Name")){
-                    this.sortByName();
-                } else if (newSort.equals("Size")){
-                    this.sortBySize();
-                } else if (newSort.equals("Date Modified")){
-                    this.sortByDateModified();
-                } else if (newSort.equals("Date Created")){
-                    this.sortByDateCreated();
-                }
-                currentSort = newSort;
+            if (newSort.equals("Type")){
+                this.sortByType();
+            } else if(newSort.equals("Name")){
+                this.sortByName();
+            } else if (newSort.equals("Size")){
+                this.sortBySize();
+            } else if (newSort.equals("Date Modified")){
+                this.sortByDateModified();
+            } else if (newSort.equals("Date Created")){
+                this.sortByDateCreated();
             }
+            currentSort = newSort;
             
             // After the sorting is done, rearrange the FilePanels on-screen.
             refresh();
@@ -501,7 +489,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     * */
+     *
+     * @return
+     */
     public int sortFileDirectory(){
         int partition = 0;
 
@@ -528,7 +518,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     * Sorts this.list's FilePanels in TODO order by filename.
+     * Sorts this.list's FilePanels in ascending order by filename.
      * @author Dan Tran
      * @author Ian Ho-Sing-Loy
      */
@@ -542,34 +532,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
         // Directory Sort
         quickSort(list, 0, partition - 1, 1);
-        /*
-        for(int i = 0; i < partition; i++){
-            for(int j = i + 1; j < partition; j++){
-                if (list[i].getFileName().toLowerCase().compareTo(list[j].getFileName().toLowerCase()) > 0) {
-                    FilePanel temp = list[j];
-                    list[j] = list[i];
-                    list[i] = temp;
-                }
-            }
-        }//*/
-
+        
         // File Sort
         quickSort(list, partition, list.length - 1, 1);
-        /*
-        for (int i = partition; i < list.length; i++) {
-            for (int j = i + 1; j < list.length; j++) {
-                if (list[i].getFileName().toLowerCase().compareTo(list[j].getFileName().toLowerCase()) > 0) {
-                    FilePanel temp = list[j];
-                    list[j] = list[i];
-                    list[i] = temp;
-                }
-            }
-        }
-        System.out.println("Sorted.");//*/
+        System.out.println("Sorted.");
     } // Code 1
     
     /**
-     * Sorts this.list's FilePanels in TODO order by size.
+     * Sorts this.list's FilePanels in ascending order by size.
      * @author Dan Tran
      */
     public void sortBySize(){
@@ -579,25 +549,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
 
         int partition = this.sortFileDirectory();
-
+        quickSort(list, 0, list.length - 1, 2);
         // Sort file sizes
-
         quickSort(list, partition, list.length - 1, 2);
-        /*
-        for (int i = partition; i < list.length; i++) {
-            for (int j = i + 1; j < list.length; j++) {
-                if (list[j].getFileSize().compareTo(list[i].getFileSize()) > 0) {
-                    FilePanel temp = list[j];
-                    list[j] = list[i];
-                    list[i] = temp;
-                }
-            }
-        }//*/
         System.out.println("Sorted.");
     } // Code 2
     
     /**
-     * Sorts this.list's FilePanels in TODO order by file extension.
+     * Sorts this.list's FilePanels in ascending order by file extension.
      * @author Dan Tran
      * @author Ian Ho-Sing-Loy
      */
@@ -608,25 +567,13 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
 
         int partition = this.sortFileDirectory();
-
+        quickSort(list, 0, list.length - 1, 3);
         quickSort(list, partition, list.length - 1, 3);
-        
-        // Sort list
-        /*
-        for (int i = partition; i < list.length; i++) {
-            for (int j = i + 1; j < list.length; j++) {
-                if (list[i].getFileType().toLowerCase().compareTo(list[j].getFileType().toLowerCase()) > 0) {
-                    FilePanel temp = list[j];
-                    list[j] = list[i];
-                    list[i] = temp;
-                }
-            }
-        }//*/
         System.out.println("Sorted.");
     } // Code 3
     
     /**
-     * Sorts this.list's FilePanels in TODO order by date of last modification.
+     * Sorts this.list's FilePanels in ascending order by date of last modification.
      * @author Dan Tran
      */
     public void sortByDateModified(){
@@ -635,21 +582,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             System.out.println(i + ". " + list[i].getFileName());
         }
         
-        // Sort list
-        for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getDateModified() > list[j + 1].getDateModified()) {
-                    FilePanel temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
-                }
-            }
-        }
+        int partition = this.sortFileDirectory();
+        quickSort(list, 0, list.length - 1, 4);
+        quickSort(list,partition,list.length-1,4);
         System.out.println("Sorted.");
     } // Code 4
     
     /**
-     * Sorts this.list's FilePanels in TODO order by date of creation.
+     * Sorts this.list's FilePanels in ascending order by date of creation.
      * @author Dan Tran
      */
     public void sortByDateCreated(){
@@ -658,20 +598,20 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             System.out.println(i + ". " + list[i].getFileName());
         }
         
-        // Sort list
-        for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < list.length - i - 1; j++) {
-                if (list[j].getDateCreated() > list[j + 1].getDateCreated()) {
-                    FilePanel temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
-                }
-            }
-        }
+        int partition = this.sortFileDirectory();
+        quickSort(list, 0, list.length - 1, 5);
+        quickSort(list,partition,list.length-1,5);
         System.out.println("Sorted.");
     } // Code 5
-
-    // Sorts the Student pointer array using the "quick sort" algorithm
+    
+    /**
+     * Sorts the Student pointer array using the "quick sort" algorithm
+     * @author Ian-Ho-Sing-Loy
+     * @param list
+     * @param begin
+     * @param end
+     * @param code
+     */
     public void quickSort(FilePanel list[], int begin, int end, int code) {
         // If the begin and end indices are the same, the selection has only one element
         if (begin != end) {
@@ -722,6 +662,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
     }
 
+    /**
+     *
+     * @param list
+     * @param element1
+     * @param element2
+     */
     public void switchElements(FilePanel list[], int element1, int element2) {
         FilePanel temp = list[element1];
 
@@ -729,6 +675,13 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         list[element2] = temp;
     }
 
+    /**
+     *
+     * @param F1
+     * @param F2
+     * @param code
+     * @return
+     */
     public boolean compare(FilePanel F1, FilePanel F2, int code) {
         switch (code) {
             case 1: // Filename
@@ -736,12 +689,23 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             case 2: // File size
                 return F1.getFileSize().compareTo(F2.getFileSize()) >= 0;
             case 3: // File Type
-                return F1.getFileTypeText(F1.getFileType()).toLowerCase().compareTo(F2.getFileTypeText(F2.getFileType()).toLowerCase()) <= 0;
+                return F1.getFileType().toLowerCase().compareTo(F2.getFileType().toLowerCase()) <= 0;
+            case 4:
+                return F1.getDateModified() > F2.getDateModified();
+            case 5:
+                return F1.getDateCreated() > F2.getDateCreated();
             default:
                 return false;
         }
     }
 
+    /**
+     *
+     * @param F1
+     * @param F2
+     * @param code
+     * @return
+     */
     public boolean equality(FilePanel F1, FilePanel F2, int code) {
         switch (code) {
             case 1: // File name
@@ -750,6 +714,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                 return F1.getFileSize().compareTo(F2.getFileSize()) == 0;
             case 3: // File type
                 return F1.getFileType().toLowerCase().compareTo(F2.getFileName().toLowerCase()) == 0;
+            case 4:
+                return F1.getDateModified() == F2.getDateModified();
+            case 5:
+                return F1.getDateCreated() == F2.getDateCreated();
             default:
                 return false;
         }
