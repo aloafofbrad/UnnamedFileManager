@@ -124,7 +124,7 @@ public class FilePanel extends JPanel{
         this.isDirectory = self.isDirectory();
         if (this.isDirectory){
             // Update the icon
-            this.icon = new ImageIcon("icons/folder.png",path);
+            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
             
             // Hide the size of a directory.
             this.size.setVisible(false);
@@ -412,6 +412,9 @@ public class FilePanel extends JPanel{
         layout.putConstraint(SpringLayout.WEST, dateCreated, hsum, SpringLayout.WEST,this);
         layout.putConstraint(SpringLayout.NORTH, dateCreated, vsum, SpringLayout.NORTH,this);
         hsum += dateCreated.getPreferredSize().width + 4;
+        
+        int height = this.getPreferredSize().height;
+        this.setPreferredSize(new Dimension(hsum,height));
     }
     
     /**
