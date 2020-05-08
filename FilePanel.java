@@ -129,13 +129,13 @@ public class FilePanel extends JPanel{
         this.isDirectory = self.isDirectory();
         if (this.isDirectory){
             // Update the icon
-            this.icon = new ImageIcon("icons/folder.png",path);
+            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
             
             // Hide the size of a directory.
             this.size.setVisible(false);
         } else{
             // Update the icon
-            this.icon = new ImageIcon("icons/file.png",path);
+            this.icon = new ImageIcon("src/main/java/icons/file.png",path);
             
             // Show & set text for fields based on file data. Credit to Dan Tran
             try{
@@ -145,6 +145,7 @@ public class FilePanel extends JPanel{
                 this.size.setToolTipText("A security error occurred and the file's size could not be read.");
             }
             catch (Exception e){
+                System.out.println(e.getMessage());
                 this.size.setToolTipText("An error occurred and the file's size could not be read.");
             }
         }
@@ -188,7 +189,7 @@ public class FilePanel extends JPanel{
         // If it's a directory, we don't need to do any work.
         if (!isDirectory){
             BigDecimal filesize = new BigDecimal(length);
-            filesize.setScale(3);
+            filesize.setScale(3,BigDecimal.ROUND_CEILING);
             String theSize = length.toString();
             BigDecimal k = new BigDecimal("1000");
             BigDecimal M = new BigDecimal("1000000");
@@ -203,7 +204,7 @@ public class FilePanel extends JPanel{
             // If the file's less than a megabyte, represent it in kilobytes.
             else if (filesize.compareTo(M) == -1){
                 filesize = filesize.divide(k);
-                filesize.setScale(3);
+                filesize.setScale(3,BigDecimal.ROUND_CEILING);
                 theSize = filesize.toString();
                 theSize += " KB";
                 this.size.setToolTipText(filesize.toString() + " kilobytes");
@@ -211,7 +212,7 @@ public class FilePanel extends JPanel{
             // If the file's less than a gigabyte, represent it in megabytes.
             else if (filesize.compareTo(G) == -1){
                 filesize = filesize.divide(M);
-                filesize.setScale(3);
+                filesize.setScale(3,BigDecimal.ROUND_CEILING);
                 theSize = filesize.toString();
                 theSize += " MB";
                 this.size.setToolTipText(filesize.toString() + " megabytes");
@@ -219,7 +220,7 @@ public class FilePanel extends JPanel{
             // If the file's less than a terabyte, represent it in gigabytes.
             else if (filesize.compareTo(T) == -1){
                 filesize = filesize.divide(G);
-                filesize.setScale(3);
+                filesize.setScale(3,BigDecimal.ROUND_CEILING);
                 theSize = filesize.toString();
                 theSize += " GB";
                 this.size.setToolTipText(filesize.toString() + " gigabytes");
@@ -227,7 +228,7 @@ public class FilePanel extends JPanel{
             // If the file's 1 or more terabytes, represent it in terabytes.
             else {
                 filesize = filesize.divide(T);
-                filesize.setScale(3);
+                filesize.setScale(3,BigDecimal.ROUND_CEILING);
                 theSize = filesize.toString();
                 theSize += " TB";
                 this.size.setToolTipText(filesize.toString() + " terabytes");
