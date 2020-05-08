@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -100,6 +101,11 @@ public class FilePanel extends JPanel{
         // Add a MouseListener & deselect this
         addMouseListener(dp);
         select(false);
+
+        Border filePanelBorder;
+        filePanelBorder = BorderFactory.createLineBorder(Color.BLACK);
+
+        this.setBorder(filePanelBorder);
     }
     
     /**
@@ -168,8 +174,6 @@ public class FilePanel extends JPanel{
             System.out.println(e.getMessage());
             this.dateCreated.setText("null");
         }
-
-        filename.setBorder(BorderFactory.createLineBorder(Color.black));
     }
     
     /**
