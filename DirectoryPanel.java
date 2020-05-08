@@ -71,31 +71,40 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             list = new FilePanel[files.length];
             for (int i = 0; i < files.length;i++){
                 list[i] = new FilePanel(files[i],this);
-                if (i == 0){
-                    VERTICAL_FP_GAP = list[i].getPreferredSize().height;
-                }
-                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
-                layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
-                this.add(list[i]);
             }
-            size = new Dimension(list[0].getPreferredSize().width,files.length*VERTICAL_FP_GAP);
         }
         catch(NullPointerException npe){
             System.out.println(npe.getMessage());
-            list = new FilePanel[0];
-            size = new Dimension(300,VERTICAL_FP_GAP);
+            list = new FilePanel[1];
+            list[0] = new FilePanel("null",this);
+        }
+        
+        // Hide FilePanels in an empty directory
+        if (list.length == 0){
+            list = new FilePanel[1];
+            list[0] = new FilePanel("null",this);
+            list[0].setVisible(false);
         }
         
         this.addMouseListener(this);
+        
         /* Configure the DirectoryPanel to be scrollable by setting the size and
         calling setAutoscrolls(). */
+        jLabelFitToText();
+        VERTICAL_FP_GAP = list[0].getPreferredSize().height;
+        size = new Dimension(list[0].getPreferredSize().width,files.length*VERTICAL_FP_GAP);
         this.setPreferredSize(size);
         this.setAutoscrolls(true);
         
+        // Arrange the FilePanels on the DirectoryPanel
+        for (int i = 0;i < list.length;i++){
+            layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
+            layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+            this.add(list[i]);
+        }
+        
         // Set the background color.
         setBackground(Color.white);
-
-        jLabelFitToText();
 
         sortByName();
         refresh();
@@ -190,17 +199,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             list = new FilePanel[files.length];
             for (i = 0;i < files.length;i++){
                 list[i] = new FilePanel(files[i],this);
-                if (i == 0){
-                    VERTICAL_FP_GAP = list[i].getPreferredSize().height;
-                }
-                layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
-                layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
-                this.add(list[i]);
             }
-            jLabelFitToText();
-            System.out.println(i + " FilePanels generated / " + files.length + " files");
-            int width = list[0].getPreferredSize().width;
-            size = new Dimension(width,files.length*VERTICAL_FP_GAP);
         }
         /* Caught when unable to list contents/read data of a directory, but the
         file still exists (files.length will be null, causing the exception).
@@ -209,21 +208,40 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         catch (NullPointerException npe){
             System.out.println("NPE\n" + npe.getMessage());
             list = new FilePanel[1];
-            list[0] = new FilePanel(npe.getMessage(),this);
-            layout.putConstraint(SpringLayout.WEST,list[0],HORIZONTAL_FP_GAP,SpringLayout.WEST,this);
-            layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
-            this.add(list[0]);
+            list[0] = new FilePanel("null",this);
+            list[0].setVisible(false);
         }
         catch (Exception e){
             System.out.println("Exception\n" + e.getMessage());
             list = new FilePanel[1];
-            list[0] = new FilePanel(e.getMessage(),this);
-            layout.putConstraint(SpringLayout.WEST,list[0],HORIZONTAL_FP_GAP,SpringLayout.WEST,this);
-            layout.putConstraint(SpringLayout.NORTH,list[0],0*VERTICAL_FP_GAP,SpringLayout.NORTH,this);
-            this.add(list[0]);
+            list[0] = new FilePanel("null",this);
+            list[0].setVisible(false);
         }
         
+        // Hide FilePanels in an empty directory
+        if (list.length == 0){
+            list = new FilePanel[1];
+            list[0] = new FilePanel("null",this);
+            list[0].setVisible(false);
+        }
+        
+        jLabelFitToText();
+        System.out.println(i + " FilePanels generated / " + files.length + " files");
+        /* Configure the DirectoryPanel to be scrollable by setting the size and
+        calling setAutoscrolls(). */
+        jLabelFitToText();
+        VERTICAL_FP_GAP = list[0].getPreferredSize().height;
+        size = new Dimension(list[0].getPreferredSize().width,files.length*VERTICAL_FP_GAP);
         this.setPreferredSize(size);
+        this.setAutoscrolls(true);
+        
+        // Arrange the FilePanels on the DirectoryPanel
+        for (i = 0;i < list.length;i++){
+            layout.putConstraint(SpringLayout.WEST, list[i], HORIZONTAL_FP_GAP, SpringLayout.WEST, this);
+            layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
+            this.add(list[i]);
+        }
+        
         revalidate();
         doLayout();
     }
@@ -287,50 +305,68 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     * @author Brad Nickel
+     * Adjusts all FilePanel subcomponents to be sized similarly.
+     * All FilePanel.filename components will have the same preferred size.
+     * Also applies to fileType, size, dateModified, and dateCreated components.
+     * This prevents the components from overlapping, specifically in the case of long
+     * filenames.
+     * @author Brad Nickle
      * @author Ian Ho-Sing-Loy
-     * */
+     */
     public void jLabelFitToText(){
         int maxFileNameWidth = 0;
         int maxTypeWidth = 0;
         int maxSizeWidth = 0;
         int maxDateModifiedWidth = 0;
         int maxDateCreatedWidth = 0;
+        int currentNameWidth,currentTypeWidth,currentSizeWidth,currentModifiedWidth,currentCreatedWidth;
 
-        int height = list[0].getPreferredSize().height;
+        // Get the height of a 
+        int height = list[0].getFileNameHeight();
 
         for(int i = 0; i < list.length; i++){
-            if(list[i].filename.getPreferredSize().width > maxFileNameWidth){
-                maxFileNameWidth = list[i].filename.getPreferredSize().width;
+            // Get the widths of each component
+            currentNameWidth = list[i].getFileNameWidth();
+            currentTypeWidth = list[i].getFileTypeWidth();
+            currentSizeWidth = list[i].getSizeWidth();
+            currentModifiedWidth = list[i].getDateModifiedWidth();
+            currentCreatedWidth = list[i].getDateCreatedWidth();
+            
+            // Search for the maximum width
+            if(currentNameWidth > maxFileNameWidth){
+                maxFileNameWidth = currentNameWidth;
             }
 
-            if(list[i].size.getPreferredSize().width > maxSizeWidth){
-                maxSizeWidth = list[i].size.getPreferredSize().width;
+            if(currentTypeWidth > maxTypeWidth){
+                maxTypeWidth = currentTypeWidth;
             }
 
-            if(list[i].dateModified.getPreferredSize().width > maxDateModifiedWidth){
-                maxDateModifiedWidth = list[i].dateModified.getPreferredSize().width;
+            if(currentSizeWidth > maxSizeWidth){
+                maxSizeWidth = currentSizeWidth;
             }
 
-            if(list[i].dateCreated.getPreferredSize().width > maxDateCreatedWidth){
-                maxDateCreatedWidth = list[i].dateCreated.getPreferredSize().width;
+            if(currentModifiedWidth > maxDateModifiedWidth){
+                maxDateModifiedWidth = currentModifiedWidth;
             }
 
-            if(list[i].fileType.getPreferredSize().width > maxTypeWidth){
-                maxTypeWidth = list[i].fileType.getPreferredSize().width;
+            if(currentCreatedWidth > maxDateCreatedWidth){
+                maxDateCreatedWidth = currentCreatedWidth;
             }
         }
 
+        // Configure the new sizes
+        Dimension[] preferredSizes = {new Dimension(maxFileNameWidth, height),
+            new Dimension(maxTypeWidth, height),
+            new Dimension(maxSizeWidth, height),
+            new Dimension(maxDateModifiedWidth, height),
+            new Dimension(maxDateCreatedWidth, height)};
 
+        // Pass the new sizes into the FilePanels and their components
         for(int i = 0; i < list.length; i++){
-            list[i].filename.setPreferredSize(new Dimension(maxFileNameWidth, height));
-            list[i].fileType.setPreferredSize(new Dimension(maxTypeWidth, height));
-            list[i].dateCreated.setPreferredSize(new Dimension(maxDateCreatedWidth, height));
-            list[i].dateModified.setPreferredSize(new Dimension(maxDateModifiedWidth, height));
-            list[i].size.setPreferredSize(new Dimension(maxSizeWidth, height));
-            list[i].adjustColumns();
+            list[i].adjustColumns(preferredSizes);
         }
 
+        // Resize the DirectoryPanel appropriately.
         setPreferredSize(new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP));
     }
 
@@ -680,7 +716,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
                                 /* If file pane was initially selected and the filename was single
                                 clicked on the second time, rename */
-                                else if (list[sourceIndex].isSelected() && e.getSource() == list[sourceIndex].getFileNameLabel()) {
+                                else if (list[sourceIndex].isSelected() && mngr.canVisit(list[sourceIndex].getFullFileName())
+                                         && e.getSource() == list[sourceIndex].getFileNameLabel()) {
                                     String newName = JOptionPane.showInputDialog(
                                             null,
                                             "Input New Name",
@@ -750,24 +787,28 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                                             }
                                         }
                                     }
-                                    /* If the right click was on a selected FilePanel, don't
-                                    select/deselect anything. Just configure the right click
-                                    menu. */
-                                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+                                    
+                                    // Show a right click menu, if the file that was clicked is visitable.
+                                    if (mngr.canVisit(list[sourceIndex].getFullFileName())){
+                                        /* If the right click was on a selected FilePanel, don't
+                                        select/deselect anything. Just configure the right click
+                                        menu. */
+                                        JPopupMenu rightClickFileMenu = new JPopupMenu("File");
 
-                                    /* Add options to the menu (open, open with, rename, etc...) */
-                                    OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
-                                    rightClickFileMenu.add("Open").setAction(open);
-                                    MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
-                                    rightClickFileMenu.add("Move").setAction(moveTo);
-                                    CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
-                                    rightClickFileMenu.add("Copy").setAction(copyTo);
-                                    DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
-                                    rightClickFileMenu.add("Delete").setAction(delete);
+                                        /* Add options to the menu (open, open with, rename, etc...) */
+                                        OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
+                                        rightClickFileMenu.add("Open").setAction(open);
+                                        MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
+                                        rightClickFileMenu.add("Move").setAction(moveTo);
+                                        CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
+                                        rightClickFileMenu.add("Copy").setAction(copyTo);
+                                        DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
+                                        rightClickFileMenu.add("Delete").setAction(delete);
 
 
-                                    JComponent jc = (JComponent) e.getSource();
-                                    rightClickFileMenu.show(jc, e.getX(), e.getY());
+                                        JComponent jc = (JComponent) e.getSource();
+                                        rightClickFileMenu.show(jc, e.getX(), e.getY());
+                                    }
                                 }
                             }
                         }
