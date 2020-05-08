@@ -349,33 +349,28 @@ public class FilePanel extends JPanel{
      *
      * */
     public String getFileTypeText(String s){
-        if(s.equals(".BIN")){
-            return "BIN File";
-        } else if (s.equals(".MARKER")){
-            return "MARKER File";
-        } else if(s.equals(".img")){
-            return "Disk Image File";
-        } else if (isDirectory) {
-            return "File Folder";
-        } else if(s.equals(".dat")){
-            return "Data File";
-        } else if(s.equals(".txt")){
-            return "Text Document";
-        } else if(s.equals(".pdf")){
-            return "Adobe Acrobat Document";
-        } else if(s.equals(".drawio")){
-            return "DRAWIO File";
-        } else if(s.equals(".msi")){
-            return "Windows Installer Package";
-        } else if(s.equals(".dll")){
-            return "Application extension";
-        } else if (s.equals(".sys")){
-            return "System File";
-        } else if (s.equals(".ini")){
-            return "Configuration Settings";
-        } else {
-            return "Unknown File Type";
-        }
+        if (isDirectory) return "File Folder";
+        else if (s.equals(".exe")) return "Executable";
+        else if (s.equals(".BIN")) return "BIN File";
+        else if (s.equals(".MARKER")) return "MARKER File";
+        else if (s.equals(".img")) return "Disk Image File";
+        else if (s.equals(".dat")) return "Data File";
+        else if (s.equals(".txt")) return "Text";
+        else if (s.equals(".pdf")) return "Document";
+        else if (s.equals(".drawio")) return "DRAWIO File";
+        else if (s.equals(".msi")) return "Windows Installer Package";
+        else if (s.equals(".dll")) return "Application extension";
+        else if (s.equals(".sys")) return "System File";
+        else if (s.equals(".ini")) return "Configuration Settings";
+        else if (s.equals(".doc") || s.equals(".docx")) return "Document";
+        else if (s.equals(".xlsx")) return "Spreadsheet";
+        else if (s.equals(".ppt")) return "Powerpoint";
+        else if (s.equals(".png") || s.equals(".gif")) return "Image";
+        else if (s.equals(".jpg") || s.equals(".jpeg")) return "Image";
+        else if (s.equals(".bmp")) return "Image";
+        else if (s.equals(".avi") || s.equals(".mkv")) return "Video";
+        else if (s.equals(".mp3") || s.equals(".wav")) return "Audio";
+        else return "Unknown File Type";
     }
     
     /**
