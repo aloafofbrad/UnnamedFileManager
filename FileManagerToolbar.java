@@ -152,10 +152,12 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        name.setPreferredSize(new Dimension(width,height));
        width = type.getPreferredSize().width;
        type.setPreferredSize(new Dimension(width,height));
+       type.setMargin(new Insets(0, 0, 0, 0));
        width = size.getPreferredSize().width;
        size.setPreferredSize(new Dimension(width,height));
        width = dateModified.getPreferredSize().width;
        dateModified.setPreferredSize(new Dimension(width,height));
+       dateModified.setMargin(new Insets(0, 0, 0, 0));
        width = dateCreated.getPreferredSize().width;
        dateCreated.setPreferredSize(new Dimension(width,height));
        

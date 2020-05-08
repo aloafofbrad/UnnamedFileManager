@@ -169,8 +169,6 @@ public class FilePanel extends JPanel{
             System.out.println(e.getMessage());
             this.dateCreated.setText("null");
         }
-
-
     }
     
     /**

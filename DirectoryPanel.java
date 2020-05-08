@@ -333,8 +333,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             list[i].adjustColumns();
         }
 
-        size = new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP);
-        setPreferredSize(size);
+        setPreferredSize(new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP));
     }
 
     /*
