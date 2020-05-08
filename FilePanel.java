@@ -40,7 +40,7 @@ public class FilePanel extends JPanel{
         by this FilePanel */
         
         // Configure the icon
-        icon = new ImageIcon("src/main/java/icons/file.png",fn);
+        icon = new ImageIcon("icons/file.png",fn);
         pic = new JLabel(icon);
         pic.addMouseListener(dp);
         layout.putConstraint(SpringLayout.WEST,pic,sum,SpringLayout.WEST,this);
@@ -124,13 +124,13 @@ public class FilePanel extends JPanel{
         this.isDirectory = self.isDirectory();
         if (this.isDirectory){
             // Update the icon
-            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
+            this.icon = new ImageIcon("icons/folder.png",path);
             
             // Hide the size of a directory.
             this.size.setVisible(false);
         } else{
             // Update the icon
-            this.icon = new ImageIcon("src/main/java/icons/file.png",path);
+            this.icon = new ImageIcon("icons/file.png",path);
             
             // Show & set text for fields based on file data. Credit to Dan Tran
             try{

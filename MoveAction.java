@@ -32,7 +32,7 @@ public class MoveAction extends AbstractAction {
      * Default MoveAction constructor.
      * @param key a key to find value with
      * @param value the FilePanel to act on
-     * @param the current directory of the directory panel
+     * @param current current directory of the directory panel
      */
     public MoveAction(String key,Object value, String current){
         super("Move",null);
@@ -105,6 +105,7 @@ public class MoveAction extends AbstractAction {
      * Deletes a selected file
      * @author Brandon Moore
      * @author Bradley Nickle
+     * @param oldFile
      * @return the status of the operation
      */
     private static String deleteFile(String oldFile) throws IOException {

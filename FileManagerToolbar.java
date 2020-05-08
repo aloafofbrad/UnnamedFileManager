@@ -87,7 +87,11 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        // Instantiate button group for sorting buttons
        sortButtons = new ButtonGroup();
        
-       // Configure the sorting buttons
+       /*
+            Configure the sorting buttons
+       */
+
+       // Name Button
        name = new JButton("Name");
        name.setToolTipText("Sort by file name");
        name.addMouseListener(this);
@@ -96,16 +100,18 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        layout.putConstraint(SpringLayout.NORTH,name,vsum,SpringLayout.NORTH,this);
        add(name);
        hsum_bottom += HGAP + name.getPreferredSize().width;
-       
+
+       // Type Button
        type = new JButton("Type");
        type.setToolTipText("Sort by file type");
        type.addMouseListener(this);
        sortButtons.add(type);
-       layout.putConstraint(SpringLayout.WEST,type,hsum_bottom,SpringLayout.WEST,this);
+       layout.putConstraint(SpringLayout.WEST,type,hsum_bottom, SpringLayout.WEST,this);
        layout.putConstraint(SpringLayout.NORTH,type,vsum,SpringLayout.NORTH,this);
        add(type);
        hsum_bottom += HGAP + type.getPreferredSize().width;
-       
+
+       // Size Button
        size = new JButton("Size");
        size.setToolTipText("Sort by file size");
        size.addMouseListener(this);
@@ -114,7 +120,8 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        layout.putConstraint(SpringLayout.NORTH,size,vsum,SpringLayout.NORTH,this);
        add(size);
        hsum_bottom += HGAP + size.getPreferredSize().width;
-       
+
+       // Date Modified Button
        dateModified = new JButton("Date Modified");
        dateModified.setToolTipText("Sort by date modified");
        dateModified.addMouseListener(this);
@@ -123,7 +130,8 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        layout.putConstraint(SpringLayout.NORTH,dateModified,vsum,SpringLayout.NORTH,this);
        add(dateModified);
        hsum_bottom += HGAP + dateModified.getPreferredSize().width;
-       
+
+       // Date Created Button
        dateCreated = new JButton("Date Created");
        dateCreated.setToolTipText("Sort by date created");
        dateCreated.addMouseListener(this);
@@ -134,8 +142,9 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
        hsum_bottom += HGAP + dateCreated.getPreferredSize().width + HGAP;
        
        // Adjust button heights to match the address bar! Thinner buttons look nicer.
+       int width = type.getPreferredSize().width;
        int height = addressBar.getPreferredSize().height;
-       int width = backButton.getPreferredSize().width;
+       width = backButton.getPreferredSize().width;
        backButton.setPreferredSize(new Dimension(width,height));
        width = forwardButton.getPreferredSize().width;
        forwardButton.setPreferredSize(new Dimension(width,height));

@@ -15,12 +15,16 @@ import java.util.ArrayList;
 public class Manager extends Subject{
     // Index representing the currently displayed directory.
     private int index;
-    // A list of all directories visitable through the use of the foward/back buttons.
+    // A list of all directories visitable through the use of the forward/back buttons.
     private ArrayList<String> history;
     // The directory the Manager started at. Cannot use "back" when root == current.
     private String root;
     private String searchKey;
     private String sortAttribute;
+
+    /*
+        Constructor
+    */
     
     /**
      * Parameterized constructor for Navigators.
@@ -115,7 +119,7 @@ public class Manager extends Subject{
     public void forward(String next){
         int last = history.size() - 1;
         if (index != last){
-            int smallestIndex = 0 + index;
+            int smallestIndex = index;
 
             /* Remove any directories "in front of" the current directory.
             a <-> b <-> b1 <-> b2       N
@@ -317,7 +321,11 @@ public class Manager extends Subject{
     public int size(){
         return history.size();
     }
-    
+
+    /*
+        SearchKey Methods
+    */
+
     /**
      * Set a search key to be used in a search.
      * Intended to be called from FileManagerToolbar to DirectoryPanel.
@@ -338,6 +346,10 @@ public class Manager extends Subject{
     public String getSearchKey(){
         return searchKey;
     }
+
+    /*
+        SortAttribute Methods
+    */
     
     /**
      * Set an attribute to sort by.

@@ -38,7 +38,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     FileManagerToolbar sort buttons, using their getText() methods. See
     FileManagerToolbar.mouseClicked() for an example. */
     private String currentSort;
-    
+
+    /*
+        Constructor
+    */
+
     /**
      * Default constructor for DirectoryPanels.
      * @param n sets this.currentDirectory
@@ -93,8 +97,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
         jLabelFitToText();
 
-        //sortByName();
-        //refresh();
+        sortByName();
+        refresh();
     }
     
     /**
@@ -153,187 +157,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             }
         }
         return true;
-    }
-
-    /**
-     * Overridden MouseListener method.
-     * @param e the MouseEvent to be processed.
-     * @author Bradley Nickle
-     * @author Dan Tran
-     */
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        /* First, discern what was clicked on. If nothing was clicked, nothing
-        needs to happen. */
-        int sourceIndex = findSource(e.getSource());
-        if (sourceIndex != -999){
-            // Get the number of clicks. Credit to Dan Tran
-            final int CLICKS = e.getClickCount();
-            final int BUTTON = e.getButton();
-            
-            // Double click (with left mouse button)
-            if (CLICKS == 2 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
-                /* If the double click was on the DirectoryPanel, deselect all
-                FilePanels. The following condition is equivalent to:
-                 "if (the e.getSource() == this)"
-                */
-                System.out.println("Double Click");
-                if (sourceIndex == -1){
-                    for (int i = 0;i < list.length;i++){
-                        list[i].select(false);
-                    }
-                }
-                
-                /* If the double click was on a FilePanel, open the file. */
-                else{
-                    if (list[sourceIndex].isDirectory())
-                    {
-                        try{
-                            if (mngr.canVisit(list[sourceIndex].getFullFileName())){
-                                mngr.forward(list[sourceIndex].getFullFileName());
-                                currentPath = mngr.getDirectory();
-                            }
-                        }
-                        catch(NullPointerException npe){
-                            System.out.println(npe.getMessage());
-                        }
-                    }
-                    else{
-                        /* Open using the same code from the right-click menu, for
-                        consistency. */
-                        OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
-                        open.actionPerformed(new ActionEvent(e.getSource(),0,""));
-                    }
-                }
-
-                wasDoubleClick = true;
-            } else {
-                // This is how fast the double click is
-                int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 3;
-
-                /* Create timer to interval of clickInterval to call ActionListener
-                to do the single click if wasDoubleClick is false. Basically, if
-                the time between clicks is greater than clickInterval, it will
-                register a single click rather than a double click. */
-                t = new Timer(clickInterval, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e1) {
-                        if(wasDoubleClick){
-                            wasDoubleClick = false;
-                        } else {
-                            System.out.println("Single Click");
-                            // Single left click
-                            if (BUTTON == java.awt.event.MouseEvent.BUTTON1) {
-                                /* If this was any kind of click on the DirectoryPanel, deselect
-                                all FilePanels. */
-                                if (sourceIndex == -1) {
-                                    for (int i = 0; i < list.length; i++) {
-                                        list[i].select(false);
-                                    }
-                                }
-
-                                /* If file pane was initially selected and the filename was single
-                                clicked on the second time, rename */
-                                else if (list[sourceIndex].isSelected() && e.getSource() == list[sourceIndex].getFileNameLabel()) {
-                                    String newName = JOptionPane.showInputDialog(
-                                            null,
-                                            "Input New Name",
-                                            "Rename",
-                                            JOptionPane.INFORMATION_MESSAGE
-                                    );
-
-                                    // If the user entered an invalid filename, let them try again
-                                    if (!validString(newName)) {
-                                        while (validString(newName) == false && newName != null) {
-                                            newName = JOptionPane.showInputDialog(
-                                                    null,
-                                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
-                                                    "Rename",
-                                                    JOptionPane.ERROR_MESSAGE
-                                            );
-                                        }
-                                    }
-
-                                    /* If the user didn't cancel, rename the file.
-                                    newName == null if the user cancelled. */
-                                    if (newName != null && !newName.isEmpty()) {
-                                        String extension = "";
-                                        File source = new File(list[sourceIndex].getFullFileName());
-
-                                        if(!list[sourceIndex].isDirectory()){
-                                            extension = list[sourceIndex].getFileName().substring(list[sourceIndex].getFileName().lastIndexOf("."));
-                                        }
-
-                                        newName += extension;
-                                        source.renameTo(new File(currentPath + '\\' + newName));
-                                        list[sourceIndex].setText(newName);
-                                    }
-                                }
-
-                                /* If this was not a shift click or control click, deselect all
-                                and select the source of the click. */
-                                else {
-                                    for (int i = 0; i < list.length; i++) {
-                                        if (i != sourceIndex) {
-                                            list[i].select(false);
-                                        } else {
-                                            list[i].select(true);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Single right click
-                            else if (BUTTON == java.awt.event.MouseEvent.BUTTON3) {
-                                /* If the right click was on the DirectoryPanel, deselect all
-                                FilePanels and draw a popup menu for sorting. */
-                                if (sourceIndex == -1) {
-                                    for (int i = 0; i < list.length; i++) {
-                                        list[i].select(false);
-                                    }
-                                    // TODO draw a popup menu ?
-                                } else {
-                                    /* If the right click was on an unselected FilePanel,
-                                    deselect all other FilePanels and select it. */
-                                    if (!list[sourceIndex].isSelected()) {
-                                        for (int i = 0; i < list.length; i++) {
-                                            if (i != sourceIndex) {
-                                                list[i].select(false);
-                                            } else {
-                                                list[i].select(true);
-                                            }
-                                        }
-                                    }
-                                    /* If the right click was on a selected FilePanel, don't
-                                    select/deselect anything. Just configure the right click
-                                    menu. */
-                                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
-
-                                    /* Add options to the menu (open, open with, rename, etc...) */
-                                    OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
-                                    rightClickFileMenu.add("Open").setAction(open);
-                                    MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
-                                    rightClickFileMenu.add("Move").setAction(moveTo);
-                                    CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
-                                    rightClickFileMenu.add("Copy").setAction(copyTo);
-                                    DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
-                                    rightClickFileMenu.add("Delete").setAction(delete);
-
-                                    // TODO update?
-
-                                    JComponent jc = (JComponent) e.getSource();
-                                    rightClickFileMenu.show(jc, e.getX(), e.getY());
-                                }
-                            }
-                        }
-                    }
-                });
-
-                // Ensure that the timer does not repeat
-                t.setRepeats(false);
-                t.start();
-            }
-        }
     }
     
     /**
@@ -462,6 +285,61 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         revalidate();
         doLayout();
     }
+
+    /**
+     * @author Brad Nickel
+     * @author Ian Ho-Sing-Loy
+     * */
+    public void jLabelFitToText(){
+        int maxFileNameWidth = 0;
+        int maxTypeWidth = 0;
+        int maxSizeWidth = 0;
+        int maxDateModifiedWidth = 0;
+        int maxDateCreatedWidth = 0;
+
+        int height = list[0].getPreferredSize().height;
+
+        for(int i = 0; i < list.length; i++){
+            System.out.println(list[i].filename.getText() + ": " + list[i].filename.getPreferredSize().width);
+            if(list[i].filename.getPreferredSize().width > maxFileNameWidth){
+                maxFileNameWidth = list[i].filename.getPreferredSize().width;
+            }
+
+            if(list[i].size.getPreferredSize().width > maxSizeWidth){
+                maxSizeWidth = list[i].size.getPreferredSize().width;
+            }
+
+            if(list[i].dateModified.getPreferredSize().width > maxDateModifiedWidth){
+                maxDateModifiedWidth = list[i].dateModified.getPreferredSize().width;
+            }
+
+            if(list[i].dateCreated.getPreferredSize().width > maxDateCreatedWidth){
+                maxDateCreatedWidth = list[i].dateCreated.getPreferredSize().width;
+            }
+
+            if(list[i].fileType.getPreferredSize().width > maxTypeWidth){
+                maxTypeWidth = list[i].fileType.getPreferredSize().width;
+            }
+        }
+
+        System.out.println("Max File width: " + maxFileNameWidth);
+
+        for(int i = 0; i < list.length; i++){
+            list[i].filename.setPreferredSize(new Dimension(maxFileNameWidth, height));
+            list[i].fileType.setPreferredSize(new Dimension(maxTypeWidth, height));
+            list[i].dateCreated.setPreferredSize(new Dimension(maxDateCreatedWidth, height));
+            list[i].dateModified.setPreferredSize(new Dimension(maxDateModifiedWidth, height));
+            list[i].size.setPreferredSize(new Dimension(maxSizeWidth, height));
+            list[i].adjustColumns();
+        }
+
+        size = new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP);
+        setPreferredSize(size);
+    }
+
+    /*
+        Sort Methods
+    */
 
     /**
      * Overridden ManagerObserver method.
@@ -628,7 +506,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         quickSort(list,partition,list.length-1,5);
         System.out.println("Sorted.");
     } // Code 5
-    
+
+    /*
+        QuickSort and Helper Methods
+    */
+
     /**
      * Sorts the filepanel array using the "quick sort" algorithm
      * @author Ian-Ho-Sing-Loy
@@ -712,11 +594,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     public boolean compare(FilePanel F1, FilePanel F2, int code) {
         switch (code) {
             case 1: // Filename
-                return F1.getFileName().toLowerCase().compareTo(F2.getFileName().toLowerCase()) <= 0;
+                return F2.getFileName().toLowerCase().compareTo(F1.getFileName().toLowerCase()) > 0;
             case 2: // File size
                 return F1.getFileSize().compareTo(F2.getFileSize()) >= 0;
             case 3: // File Type
-                return F1.getFileType().toLowerCase().compareTo(F2.getFileType().toLowerCase()) <= 0;
+                return F2.getFileType().toLowerCase().compareTo(F1.getFileType().toLowerCase()) > 0;
             case 4:
                 return F1.getDateModified() > F2.getDateModified();
             case 5:
@@ -741,7 +623,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             case 2: // File size
                 return F1.getFileSize().compareTo(F2.getFileSize()) == 0;
             case 3: // File type
-                return F1.getFileType().toLowerCase().compareTo(F2.getFileName().toLowerCase()) == 0;
+                return F1.getFileType().toLowerCase().compareTo(F2.getFileType().toLowerCase()) == 0;
             case 4:
                 return F1.getDateModified() == F2.getDateModified();
             case 5:
@@ -751,51 +633,189 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
     }
 
-    public void jLabelFitToText(){
-        int maxFileNameWidth = 0;
-        int maxTypeWidth = 0;
-        int maxSizeWidth = 0;
-        int maxDateModifiedWidth = 0;
-        int maxDateCreatedWidth = 0;
+    /*
+        MouseListener Methods
+    */
 
-        int height = list[0].getPreferredSize().height;
+    /**
+     * Overridden MouseListener method.
+     * @param e the MouseEvent to be processed.
+     * @author Bradley Nickle
+     * @author Dan Tran
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        /* First, discern what was clicked on. If nothing was clicked, nothing
+        needs to happen. */
+        int sourceIndex = findSource(e.getSource());
+        if (sourceIndex != -999){
+            // Get the number of clicks. Credit to Dan Tran
+            final int CLICKS = e.getClickCount();
+            final int BUTTON = e.getButton();
 
-        for(int i = 0; i < list.length; i++){
-            System.out.println(list[i].filename.getText() + ": " + list[i].filename.getPreferredSize().width);
-            if(list[i].filename.getPreferredSize().width > maxFileNameWidth){
-                maxFileNameWidth = list[i].filename.getPreferredSize().width;
-            }
+            // Double click (with left mouse button)
+            if (CLICKS == 2 && BUTTON == java.awt.event.MouseEvent.BUTTON1){
+                /* If the double click was on the DirectoryPanel, deselect all
+                FilePanels. The following condition is equivalent to:
+                 "if (the e.getSource() == this)"
+                */
+                System.out.println("Double Click");
+                if (sourceIndex == -1){
+                    for (int i = 0;i < list.length;i++){
+                        list[i].select(false);
+                    }
+                }
 
-            if(list[i].size.getPreferredSize().width > maxSizeWidth){
-                maxSizeWidth = list[i].size.getPreferredSize().width;
-            }
+                /* If the double click was on a FilePanel, open the file. */
+                else{
+                    if (list[sourceIndex].isDirectory())
+                    {
+                        try{
+                            if (mngr.canVisit(list[sourceIndex].getFullFileName())){
+                                mngr.forward(list[sourceIndex].getFullFileName());
+                                currentPath = mngr.getDirectory();
+                            }
+                        }
+                        catch(NullPointerException npe){
+                            System.out.println(npe.getMessage());
+                        }
+                    }
+                    else{
+                        /* Open using the same code from the right-click menu, for
+                        consistency. */
+                        OpenAction open = new OpenAction("FilePanel",list[sourceIndex]);
+                        open.actionPerformed(new ActionEvent(e.getSource(),0,""));
+                    }
+                }
 
-            if(list[i].dateModified.getPreferredSize().width > maxDateModifiedWidth){
-                maxDateModifiedWidth = list[i].dateModified.getPreferredSize().width;
-            }
+                wasDoubleClick = true;
+            } else {
+                // This is how fast the double click is
+                int clickInterval = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 3;
 
-            if(list[i].dateCreated.getPreferredSize().width > maxDateCreatedWidth){
-                maxDateCreatedWidth = list[i].dateCreated.getPreferredSize().width;
-            }
+                /* Create timer to interval of clickInterval to call ActionListener
+                to do the single click if wasDoubleClick is false. Basically, if
+                the time between clicks is greater than clickInterval, it will
+                register a single click rather than a double click. */
+                t = new Timer(clickInterval, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e1) {
+                        if(wasDoubleClick){
+                            wasDoubleClick = false;
+                        } else {
+                            System.out.println("Single Click");
+                            // Single left click
+                            if (BUTTON == java.awt.event.MouseEvent.BUTTON1) {
+                                /* If this was any kind of click on the DirectoryPanel, deselect
+                                all FilePanels. */
+                                if (sourceIndex == -1) {
+                                    for (int i = 0; i < list.length; i++) {
+                                        list[i].select(false);
+                                    }
+                                }
 
-            if(list[i].fileType.getPreferredSize().width > maxTypeWidth){
-                maxTypeWidth = list[i].fileType.getPreferredSize().width;
+                                /* If file pane was initially selected and the filename was single
+                                clicked on the second time, rename */
+                                else if (list[sourceIndex].isSelected() && e.getSource() == list[sourceIndex].getFileNameLabel()) {
+                                    String newName = JOptionPane.showInputDialog(
+                                            null,
+                                            "Input New Name",
+                                            "Rename",
+                                            JOptionPane.INFORMATION_MESSAGE
+                                    );
+
+                                    // If the user entered an invalid filename, let them try again
+                                    if (!validString(newName)) {
+                                        while (validString(newName) == false && newName != null) {
+                                            newName = JOptionPane.showInputDialog(
+                                                    null,
+                                                    "Invalid Character Detected. (/, \\, ?, \", *, <, >, |)",
+                                                    "Rename",
+                                                    JOptionPane.ERROR_MESSAGE
+                                            );
+                                        }
+                                    }
+
+                                    /* If the user didn't cancel, rename the file.
+                                    newName == null if the user cancelled. */
+                                    if (newName != null && !newName.isEmpty()) {
+                                        String extension = "";
+                                        File source = new File(list[sourceIndex].getFullFileName());
+
+                                        if(!list[sourceIndex].isDirectory()){
+                                            extension = list[sourceIndex].getFileName().substring(list[sourceIndex].getFileName().lastIndexOf("."));
+                                        }
+
+                                        newName += extension;
+                                        source.renameTo(new File(currentPath + '\\' + newName));
+                                        list[sourceIndex].setText(newName);
+                                    }
+                                }
+
+                                /* If this was not a shift click or control click, deselect all
+                                and select the source of the click. */
+                                else {
+                                    for (int i = 0; i < list.length; i++) {
+                                        if (i != sourceIndex) {
+                                            list[i].select(false);
+                                        } else {
+                                            list[i].select(true);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Single right click
+                            else if (BUTTON == java.awt.event.MouseEvent.BUTTON3) {
+                                /* If the right click was on the DirectoryPanel, deselect all
+                                FilePanels and draw a popup menu for sorting. */
+                                if (sourceIndex == -1) {
+                                    for (int i = 0; i < list.length; i++) {
+                                        list[i].select(false);
+                                    }
+                                    // TODO draw a popup menu ?
+                                } else {
+                                    /* If the right click was on an unselected FilePanel,
+                                    deselect all other FilePanels and select it. */
+                                    if (!list[sourceIndex].isSelected()) {
+                                        for (int i = 0; i < list.length; i++) {
+                                            if (i != sourceIndex) {
+                                                list[i].select(false);
+                                            } else {
+                                                list[i].select(true);
+                                            }
+                                        }
+                                    }
+                                    /* If the right click was on a selected FilePanel, don't
+                                    select/deselect anything. Just configure the right click
+                                    menu. */
+                                    JPopupMenu rightClickFileMenu = new JPopupMenu("File");
+
+                                    /* Add options to the menu (open, open with, rename, etc...) */
+                                    OpenAction open = new OpenAction("FilePanel", list[sourceIndex]);
+                                    rightClickFileMenu.add("Open").setAction(open);
+                                    MoveAction moveTo = new MoveAction("FilePanel", list[sourceIndex], currentPath);
+                                    rightClickFileMenu.add("Move").setAction(moveTo);
+                                    CopyAction copyTo = new CopyAction("FilePanel", list[sourceIndex], currentPath);
+                                    rightClickFileMenu.add("Copy").setAction(copyTo);
+                                    DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
+                                    rightClickFileMenu.add("Delete").setAction(delete);
+
+                                    // TODO update?
+
+                                    JComponent jc = (JComponent) e.getSource();
+                                    rightClickFileMenu.show(jc, e.getX(), e.getY());
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Ensure that the timer does not repeat
+                t.setRepeats(false);
+                t.start();
             }
         }
-
-        System.out.println("Max File width: " + maxFileNameWidth);
-
-        for(int i = 0; i < list.length; i++){
-            list[i].filename.setPreferredSize(new Dimension(maxFileNameWidth, height));
-            list[i].fileType.setPreferredSize(new Dimension(maxTypeWidth, height));
-            list[i].dateCreated.setPreferredSize(new Dimension(maxDateCreatedWidth, height));
-            list[i].dateModified.setPreferredSize(new Dimension(maxDateModifiedWidth, height));
-            list[i].size.setPreferredSize(new Dimension(maxSizeWidth, height));
-            list[i].adjustColumns();
-        }
-
-        size = new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP);
-        setPreferredSize(size);
     }
 
     /**
