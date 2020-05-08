@@ -36,6 +36,7 @@ public class Window extends JFrame{
      */
     public Window(){
         // Size the Window
+        // call setBounds(x,y,w,h) from sizePosition.txt
         setBounds(100,100,640,480);
         
         // Place the Window on the screen
