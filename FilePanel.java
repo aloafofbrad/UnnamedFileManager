@@ -9,12 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
+ * A GUI component that visually represents a File.
  * @author Bradley Nickle
  */
 public class FilePanel extends JPanel{
     // Fields that will represent the file. Declared & instantiated in order from left to right.
-    public JLabel pic,filename,size,dateCreated,dateModified, fileType;
+    private JLabel pic,filename,size,dateCreated,dateModified, fileType;
     // An image that will be tied to this.pic.
     private ImageIcon icon;
     // Tracks whether or not this file should be selected.
@@ -22,7 +22,7 @@ public class FilePanel extends JPanel{
     private String absolutePath;
     // Layout manager & layout constants
     private SpringLayout layout;
-    private final int[] HORIZONTAL_GAPS = {24,256,72,128, 100};
+    private final int HORIZONTAL_GAP = 0;
     private final int VERTICAL_GAP = 4;
 
     /**
@@ -32,7 +32,6 @@ public class FilePanel extends JPanel{
      *           FilePanel and its components
      */
     public FilePanel(String fn,DirectoryPanel dp){
-        int sum = 4;
         layout = new SpringLayout();
         setLayout(layout);
         
@@ -43,56 +42,57 @@ public class FilePanel extends JPanel{
         icon = new ImageIcon("icons/file.png",fn);
         pic = new JLabel(icon);
         pic.addMouseListener(dp);
-        layout.putConstraint(SpringLayout.WEST,pic,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,pic,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[0];
         add(pic);
         
         // Configure name
         filename = new JLabel(fn);
         filename.addMouseListener(dp);
         filename.setToolTipText(fn);
-        layout.putConstraint(SpringLayout.WEST,filename,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,filename,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[1];
         add(filename);
 
         // Configure type
         fileType = new JLabel("null");
         fileType.addMouseListener(dp);
         fileType.setToolTipText("File Type");
-        layout.putConstraint(SpringLayout.WEST, fileType, sum, SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.NORTH, fileType, VERTICAL_GAP, SpringLayout.NORTH, this);
-        sum += HORIZONTAL_GAPS[2];
         add(fileType);
 
         // Configure size
         size = new JLabel("null");
         size.setToolTipText("Size in bytes");
         size.addMouseListener(dp);
-        layout.putConstraint(SpringLayout.WEST,size,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,size,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[3];
         add(size);
         
         // Configure date modified
         dateModified = new JLabel("null");
         dateModified.addMouseListener(dp);
         dateModified.setToolTipText("Date Modified");
-        layout.putConstraint(SpringLayout.WEST,dateModified,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,dateModified,VERTICAL_GAP,SpringLayout.NORTH,this);
-        sum += HORIZONTAL_GAPS[4];
         add(dateModified);
-        
+              
         // Configure date created
         dateCreated = new JLabel("null");
         dateCreated.addMouseListener(dp);
         dateCreated.setToolTipText("Date Created");
-        layout.putConstraint(SpringLayout.WEST,dateCreated,sum,SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH,dateCreated,VERTICAL_GAP,SpringLayout.NORTH,this);
         add(dateCreated);
         
-        this.setPreferredSize(new Dimension((int)(sum * 1.5),25));
+        /* Put layout constraints on the JLabels to add them to layout. These are arbitrary, and
+        will be overwritten by DirectoryPanel's calls to this.adjustColumns() 
+        Without these calls, issues with the appearance of FilePanels on screen arise. Ideally, a 
+        better solution would be searched for, but due to time constraints, we are unable to find 
+        one. */
+        layout.putConstraint(SpringLayout.WEST,pic,HORIZONTAL_GAP,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,pic,VERTICAL_GAP,SpringLayout.NORTH,this);
+        layout.putConstraint(SpringLayout.WEST,filename,HORIZONTAL_GAP,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,filename,VERTICAL_GAP,SpringLayout.NORTH,this);
+        layout.putConstraint(SpringLayout.WEST, fileType, HORIZONTAL_GAP, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, fileType, VERTICAL_GAP, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.WEST,size,HORIZONTAL_GAP,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,size,VERTICAL_GAP,SpringLayout.NORTH,this);
+        layout.putConstraint(SpringLayout.WEST,dateModified,HORIZONTAL_GAP,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,dateModified,VERTICAL_GAP,SpringLayout.NORTH,this);
+        layout.putConstraint(SpringLayout.WEST,dateCreated,HORIZONTAL_GAP,SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH,dateCreated,VERTICAL_GAP,SpringLayout.NORTH,this);
+        
+        this.setPreferredSize(new Dimension(25,25));
 
         // Configure the file, filling in the fields with appropriate names and dates
         absolutePath = dp.getCurrentPath();
@@ -129,13 +129,13 @@ public class FilePanel extends JPanel{
         this.isDirectory = self.isDirectory();
         if (this.isDirectory){
             // Update the icon
-            this.icon = new ImageIcon("icons/folder.png",path);
+            this.icon = new ImageIcon("src/main/java/icons/folder.png",path);
             
             // Hide the size of a directory.
             this.size.setVisible(false);
         } else{
             // Update the icon
-            this.icon = new ImageIcon("icons/file.png",path);
+            this.icon = new ImageIcon("src/main/java/icons/file.png",path);
             
             // Show & set text for fields based on file data. Credit to Dan Tran
             try{
@@ -243,6 +243,11 @@ public class FilePanel extends JPanel{
         return filename.getText();
     }
 
+    /**
+     * Returns the filename component. Used to check if the user clicked on it.
+     * See DirectoryPanel.mouseClicked() for details.
+     * @return the filename component
+     */
     public JLabel getFileNameLabel(){
         return filename;
     }
@@ -374,15 +379,21 @@ public class FilePanel extends JPanel{
     }
     
     /**
-     * @return the name of the file
+     * @return the absolute path of the file
      */
     public String getFullFileName(){
         return absolutePath + "/" + filename.getText();
     }
 
-    public void adjustColumns(){
+    public void adjustColumns(Dimension[] sizes){
+        filename.setPreferredSize(sizes[0]);
+        fileType.setPreferredSize(sizes[1]);
+        size.setPreferredSize(sizes[2]);
+        dateModified.setPreferredSize(sizes[3]);
+        dateCreated.setPreferredSize(sizes[4]);
+        
         int hsum = 8 + pic.getPreferredSize().width;
-        int vsum = 0;
+        int vsum = 4;
 
         layout.removeLayoutComponent(filename);
         layout.removeLayoutComponent(fileType);
@@ -430,8 +441,8 @@ public class FilePanel extends JPanel{
     }
 
     /**
-     * 
-     * @param b 
+     * Selects or deselects the FilePanel. Highlights or "unhighlights" it.
+     * @param b true for selected, false for deselected.
      */
     public void select(boolean b){
         isSelected = b;
@@ -443,15 +454,13 @@ public class FilePanel extends JPanel{
     }
     
     /**
-     * 
      * @return a boolean representing whether or not this is selected
      */
     public boolean isSelected(){
         return isSelected;
     }
     
-    /**
-     * 
+    /** 
      * @return true if the represented file is a directory, false otherwise
      */
     public boolean isDirectory(){
@@ -459,7 +468,7 @@ public class FilePanel extends JPanel{
     }
     
     /**
-     * 
+     * Checks if this FilePanel is or has the source of an event (likely MouseEvent).
      * @param o the event Object to be compared with
      * @return whether or not this FilePanel has (or is) a component equal to o
      */
@@ -471,5 +480,47 @@ public class FilePanel extends JPanel{
         if (o == pic) return true;
         if (o == size) return true;
         return false;
+    }
+    
+    /**
+     * @return the height of the filename component
+     */
+    public int getFileNameHeight(){
+        return filename.getPreferredSize().height;
+    }
+    
+    /**
+     * @return the width of the filename component
+     */
+    public int getFileNameWidth(){
+        return filename.getPreferredSize().width;
+    }
+    
+    /**
+     * @return the width of the fileType component
+     */
+    public int getFileTypeWidth(){
+        return fileType.getPreferredSize().width;
+    }
+    
+    /**
+     * @return the width of the size component
+     */
+    public int getSizeWidth(){
+        return size.getPreferredSize().width;
+    }
+    
+    /**
+     * @return the width of the dateModified component
+     */
+    public int getDateModifiedWidth(){
+        return dateModified.getPreferredSize().width;
+    }
+    
+    /**
+     * @return the width of the dateCreated component
+     */
+    public int getDateCreatedWidth(){
+        return dateCreated.getPreferredSize().width;
     }
 }
