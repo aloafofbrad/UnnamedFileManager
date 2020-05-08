@@ -385,7 +385,7 @@ public class FilePanel extends JPanel{
 
     public void adjustColumns(){
         int hsum = 8 + pic.getPreferredSize().width;
-        int vsum = 4;
+        int vsum = 0;
 
         layout.removeLayoutComponent(filename);
         layout.removeLayoutComponent(fileType);
