@@ -105,16 +105,12 @@ public class Window extends JFrame{
                 switch (i){
                     case 0:
                         XCoor = scanner.nextInt();
-                        System.out.println(XCoor);
                     case 1:
                         YCoor = scanner.nextInt();
-                        System.out.println(YCoor);
                     case 2:
                         width = scanner.nextInt();
-                        System.out.println(width);
                     case 3:
                         height = scanner.nextInt();
-                        System.out.println(height);
                 }
                 i++;
             }

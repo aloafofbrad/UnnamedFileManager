@@ -251,10 +251,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * 
      * @param searchKey the filename to be searched for
      * @author Bradley Nickle
+     * @author Ian Ho-Sing-Loy
      */
     public void search(String searchKey){
-        for (int i = 0;i < list.length;i++){
-            if (searchKey.equals(list[i].getFileName())){
+
+        for (int i = 0; i < list.length;i++){
+            if (list[i].getFileName().toLowerCase().contains(searchKey.toLowerCase())){
                 list[i].select(true);
             }
             else{
@@ -271,8 +273,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     public void refresh(){
         // After the sorting is done, rearrange the FilePanels on-screen.
         for (int i = 0; i < list.length; i++) {
-            System.out.println(i + ". " + list[i].getFileName());
-
             // Remove old graphical constraints for the FilePanel
             layout.removeLayoutComponent(list[i]);
 
@@ -300,7 +300,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         int height = list[0].getPreferredSize().height;
 
         for(int i = 0; i < list.length; i++){
-            System.out.println(list[i].filename.getText() + ": " + list[i].filename.getPreferredSize().width);
             if(list[i].filename.getPreferredSize().width > maxFileNameWidth){
                 maxFileNameWidth = list[i].filename.getPreferredSize().width;
             }
@@ -322,7 +321,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             }
         }
 
-        System.out.println("Max File width: " + maxFileNameWidth);
 
         for(int i = 0; i < list.length; i++){
             list[i].filename.setPreferredSize(new Dimension(maxFileNameWidth, height));
@@ -410,11 +408,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @author Ian Ho-Sing-Loy
      */
     public void sortByName(){
-        System.out.println("Sorting by name...");
-        for (int i = 0; i < list.length;i++){
-            System.out.println(i + ". " + list[i].getFileName());
-        }
-
         int partition = this.sortFileDirectory();
 
         // Directory Sort
@@ -422,8 +415,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         
         // File Sort
         quickSort(list, partition, list.length - 1, 1);
-
-        System.out.println("Sorted.");
     } // Code 1
     
     /**
@@ -432,17 +423,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @author Ian Ho-Sing-Loy
      */
     public void sortBySize(){
-        System.out.println("Sorting by Size...");
-        for (int i = 0;i < list.length;i++){
-            System.out.println(i + ". " + list[i].getFileName());
-        }
-
         int partition = this.sortFileDirectory();
 
         // Sort file sizes
         quickSort(list, partition, list.length - 1, 2);
-
-        System.out.println("Sorted.");
     } // Code 2
     
     /**
@@ -451,17 +435,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @author Ian Ho-Sing-Loy
      */
     public void sortByType(){
-        System.out.println("Sorting by type...");
-        for (int i = 0; i < list.length; i++){
-            System.out.println(i + ". " + list[i].getFileName());
-        }
-
         int partition = this.sortFileDirectory();
 
         // File Sort
         quickSort(list, partition, list.length - 1, 3);
-
-        System.out.println("Sorted.");
     } // Code 3
     
     /**
@@ -470,11 +447,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @author Ian Ho-Sing-Loy
      */
     public void sortByDateModified(){
-        System.out.println("Sorting by date modified...");
-        for (int i = 0;i < list.length;i++){
-            System.out.println(i + ". " + list[i].getFileName());
-        }
-        
         int partition = this.sortFileDirectory();
 
         // Directory Sort
@@ -482,7 +454,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
         // File Sort
         quickSort(list,partition,list.length-1,4);
-        System.out.println("Sorted.");
     } // Code 4
     
     /**
@@ -491,11 +462,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @author Ian Ho-Sing-Loy
      */
     public void sortByDateCreated(){
-        System.out.println("Sorting by type...");
-        for (int i = 0;i < list.length;i++){
-            System.out.println(i + ". " + list[i].getFileName());
-        }
-        
         int partition = this.sortFileDirectory();
 
         // Directory Sort
@@ -503,7 +469,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
         // File sort
         quickSort(list,partition,list.length-1,5);
-        System.out.println("Sorted.");
     } // Code 5
 
     /*
@@ -772,7 +737,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                                     for (int i = 0; i < list.length; i++) {
                                         list[i].select(false);
                                     }
-                                    // TODO draw a popup menu ?
+
                                 } else {
                                     /* If the right click was on an unselected FilePanel,
                                     deselect all other FilePanels and select it. */
@@ -800,7 +765,6 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                                     DeleteAction delete = new DeleteAction("FilePanel", list[sourceIndex]);
                                     rightClickFileMenu.add("Delete").setAction(delete);
 
-                                    // TODO update?
 
                                     JComponent jc = (JComponent) e.getSource();
                                     rightClickFileMenu.show(jc, e.getX(), e.getY());

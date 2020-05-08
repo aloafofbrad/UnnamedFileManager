@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 import java.math.BigDecimal;
@@ -24,7 +23,7 @@ public class FilePanel extends JPanel{
     private SpringLayout layout;
     private final int[] HORIZONTAL_GAPS = {24,256,72,128, 100};
     private final int VERTICAL_GAP = 4;
-    
+
     /**
      * Default constructor for FilePanels.
      * @param fn the filename (relative path, more or less)
@@ -93,7 +92,7 @@ public class FilePanel extends JPanel{
         add(dateCreated);
         
         this.setPreferredSize(new Dimension((int)(sum * 1.5),25));
-        
+
         // Configure the file, filling in the fields with appropriate names and dates
         absolutePath = dp.getCurrentPath();
         configureFile(absolutePath);
@@ -169,6 +168,8 @@ public class FilePanel extends JPanel{
             System.out.println(e.getMessage());
             this.dateCreated.setText("null");
         }
+
+        filename.setBorder(BorderFactory.createLineBorder(Color.black));
     }
     
     /**
@@ -320,7 +321,6 @@ public class FilePanel extends JPanel{
         }
     }
 
-
     /**
      * @author Ian Ho-Sing-Loy
      * @return file extension of the file
@@ -421,8 +421,7 @@ public class FilePanel extends JPanel{
     public String getAbsolutePath(){
         return absolutePath;
     }
-    
-    // TODO insert Ian's code here
+
     /**
      * @author Ian Ho-Sing-Loy
      * @param s New string for the filename
