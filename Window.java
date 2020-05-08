@@ -44,9 +44,27 @@ public class Window extends JFrame{
         // Name the Window
         setTitle("File Manager " + version);
         
-        // Set up test data NOTE this will eventually be replaced with actual file data
-        //String path = "C:/Users/aloaf/Documents";
-        String path = System.getProperty("user.home");
+        // Set up the file path for the Manager
+        String path;
+        try{
+            path = System.getProperty("user.home");
+        }
+        catch (SecurityException se){
+            System.out.println(se.getMessage());
+            path = "";
+        }
+        catch (NullPointerException npe){
+            System.out.println(npe.getMessage());
+            path = "";
+        }
+        catch (IllegalArgumentException iae){
+            System.out.println(iae.getMessage());
+            path = "";
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            path = "";
+        }
         
         // Initialize the Manager
         Manager mngr = new Manager(path);
