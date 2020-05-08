@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class Window extends JFrame{
     // Version number
-    final private double version = 0.1;
+    final private double version = 1.0;
     private DirectoryPanel centerPanel;
     private FileManagerToolbar upperToolbar;
     private FileManagerUI ui;
@@ -36,8 +36,7 @@ public class Window extends JFrame{
      * @author Ian Ho-Sing-Loy
      */
     public Window(){
-        configureOpenOperations();
-        
+        open();
         configureCloseOperations();
     }
 
@@ -56,25 +55,32 @@ public class Window extends JFrame{
                 Window theWindow = (Window) e.getWindow();
                 
                 File file;
-                try {
-                    file = new File("FileManagerProperties/sizePosition.txt");
-                    if (!file.exists()) {
+                file = new File("properties/sizePosition.txt");
+                if (!file.exists()) {
+                    try{
                         file.createNewFile();
-}
-                    
-                    /* This line is for testing. It should tell you where the program
-                    is saving sizePosition.txt to. */
-                    System.out.println("path: " + file.getAbsolutePath());
+                    }
+                    catch (java.io.IOException ioe){
+                        System.out.println(ioe.getMessage());
+                    }
+                }
+                if (file.exists()){
+                    try{
+                        /* This line is for testing. It should tell you where the program
+                        is saving sizePosition.txt to. */
+                        System.out.println("path: " + file.getAbsolutePath());
 
-                    // Write size and position data to the file.
-                    PrintWriter pw = new PrintWriter(file);
-                    pw.println(theWindow.getX());
-                    pw.println(theWindow.getY());
-                    pw.println(theWindow.getHeight());
-                    pw.println(theWindow.getWidth());
-                    pw.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                        // Write size and position data to the file.
+                        PrintWriter pw = new PrintWriter(file);
+                        pw.println(theWindow.getX());
+                        pw.println(theWindow.getY());
+                        pw.println(theWindow.getHeight());
+                        pw.println(theWindow.getWidth());
+                        pw.close();
+                    }
+                    catch (java.io.IOException ioe){
+                        System.out.println(ioe.getMessage());
+                    }
                 }
                 
                 // Close the program.
@@ -89,10 +95,10 @@ public class Window extends JFrame{
      * @author Brad Nickle
      * @author Ian Ho-Sing-Loy
      */
-    private void configureOpenOperations(){
+    private void open(){
         try {
             // Read from sizePosition.txt the parameters
-            File file = new File("FileManagerProperties/sizePosition.txt");
+            File file = new File("properties/sizePosition.txt");
             Scanner scanner = new Scanner(file);
 
             int XCoor = 0;
@@ -119,8 +125,9 @@ public class Window extends JFrame{
             // Place the Window on the screen
             // call setBounds(x,y,w,h) from sizePosition.txt
             setBounds(XCoor, YCoor, width, height);
-        } catch (java.io.FileNotFoundException e){
-            System.out.println("File not found!!!");
+        } catch (java.io.IOException ioe){
+            System.out.println(ioe.getMessage());
+            setBounds(100,100,640,480);
         }
 
         // Name the Window
