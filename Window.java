@@ -6,7 +6,6 @@
  * @author Dan Tran
  */
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +57,7 @@ public class Window extends JFrame{
                 
                 File file;
                 try {
-                    file = new File("FileManagerData/sizePosition.txt");
+                    file = new File("FileManagerProperties/sizePosition.txt");
                     if (!file.exists()) {
                         file.createNewFile();
 }
@@ -93,7 +92,7 @@ public class Window extends JFrame{
     private void configureOpenOperations(){
         try {
             // Read from sizePosition.txt the parameters
-            File file = new File("FileManagerData/sizePosition.txt");
+            File file = new File("FileManagerProperties/sizePosition.txt");
             Scanner scanner = new Scanner(file);
 
             int XCoor = 0;
