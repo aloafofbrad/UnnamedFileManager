@@ -90,6 +90,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         
         // Set the background color.
         setBackground(Color.white);
+
+        jLabelFitToText();
+
+        //sortByName();
+        //refresh();
     }
     
     /**
@@ -369,8 +374,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
                 layout.putConstraint(SpringLayout.NORTH, list[i], i*VERTICAL_FP_GAP, SpringLayout.NORTH, this);
                 this.add(list[i]);
             }
+            jLabelFitToText();
             System.out.println(i + " FilePanels generated / " + files.length + " files");
-            int width = this.getPreferredSize().width;
+            int width = list[0].getPreferredSize().width;
             size = new Dimension(width,files.length*VERTICAL_FP_GAP);
         }
         /* Caught when unable to list contents/read data of a directory, but the
@@ -436,6 +442,8 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
 
     /**
      * Resets graphical constraints on FilePanels, effectively sorting them on-screen.
+     * @author Ian Ho-Sing-Loy
+     * @author Dan Tran
      */
     public void refresh(){
         // After the sorting is done, rearrange the FilePanels on-screen.
@@ -465,6 +473,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
      * @param s the Manager triggering the sort.
      * @author Dan Tran
      * @author Bradley Nickle
+     * @author Ian Ho-Sing-Loy
      */
     @Override
     public void sort(Subject s) {
@@ -489,8 +498,9 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     *
-     * @return
+     * Separates directories from the files
+     * @author Ian Ho-Sing-Loy
+     * @return Partition where the directory ends and files begin
      */
     public int sortFileDirectory(){
         int partition = 0;
@@ -535,12 +545,14 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         
         // File Sort
         quickSort(list, partition, list.length - 1, 1);
+
         System.out.println("Sorted.");
     } // Code 1
     
     /**
      * Sorts this.list's FilePanels in ascending order by size.
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
     public void sortBySize(){
         System.out.println("Sorting by Size...");
@@ -549,9 +561,10 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
 
         int partition = this.sortFileDirectory();
-        quickSort(list, 0, list.length - 1, 2);
+
         // Sort file sizes
         quickSort(list, partition, list.length - 1, 2);
+
         System.out.println("Sorted.");
     } // Code 2
     
@@ -567,14 +580,17 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
 
         int partition = this.sortFileDirectory();
-        quickSort(list, 0, list.length - 1, 3);
+
+        // File Sort
         quickSort(list, partition, list.length - 1, 3);
+
         System.out.println("Sorted.");
     } // Code 3
     
     /**
      * Sorts this.list's FilePanels in ascending order by date of last modification.
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
     public void sortByDateModified(){
         System.out.println("Sorting by date modified...");
@@ -583,7 +599,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
         
         int partition = this.sortFileDirectory();
+
+        // Directory Sort
         quickSort(list, 0, list.length - 1, 4);
+
+        // File Sort
         quickSort(list,partition,list.length-1,4);
         System.out.println("Sorted.");
     } // Code 4
@@ -591,6 +611,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     /**
      * Sorts this.list's FilePanels in ascending order by date of creation.
      * @author Dan Tran
+     * @author Ian Ho-Sing-Loy
      */
     public void sortByDateCreated(){
         System.out.println("Sorting by type...");
@@ -599,18 +620,22 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         }
         
         int partition = this.sortFileDirectory();
+
+        // Directory Sort
         quickSort(list, 0, list.length - 1, 5);
+
+        // File sort
         quickSort(list,partition,list.length-1,5);
         System.out.println("Sorted.");
     } // Code 5
     
     /**
-     * Sorts the Student pointer array using the "quick sort" algorithm
+     * Sorts the filepanel array using the "quick sort" algorithm
      * @author Ian-Ho-Sing-Loy
-     * @param list
-     * @param begin
-     * @param end
-     * @param code
+     * @param list the array of filepanels to be processed
+     * @param begin the beginning of the range of values to be sorted
+     * @param end the ending of the range of values to be sorted
+     * @param code execute sort based on parameters associated by the code
      */
     public void quickSort(FilePanel list[], int begin, int end, int code) {
         // If the begin and end indices are the same, the selection has only one element
@@ -663,10 +688,11 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     *
-     * @param list
-     * @param element1
-     * @param element2
+     * Switches elements in the array
+     * @author Ian Ho-Sing-Loy
+     * @param list array of filepanels to be processed
+     * @param element1 First element to be swapped
+     * @param element2 Second element to be swapped
      */
     public void switchElements(FilePanel list[], int element1, int element2) {
         FilePanel temp = list[element1];
@@ -676,11 +702,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     *
-     * @param F1
-     * @param F2
-     * @param code
-     * @return
+     * Compares elements in the array
+     * @author Ian Ho-Sing-Loy
+     * @param F1 First element to be compared
+     * @param F2 Second element to be compared
+     * @param code The parameter to compare the file panels by the associated code
+     * @return Boolean of the comparison
      */
     public boolean compare(FilePanel F1, FilePanel F2, int code) {
         switch (code) {
@@ -700,11 +727,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     }
 
     /**
-     *
-     * @param F1
-     * @param F2
-     * @param code
-     * @return
+     * Evaluates the equality of the array
+     * @author Ian Ho-Sing-Loy
+     * @param F1 First element to be compared
+     * @param F2 Second element to be compared
+     * @param code The parameter to compare the file panels by the associated code
+     * @return Boolean of the comparison
      */
     public boolean equality(FilePanel F1, FilePanel F2, int code) {
         switch (code) {
@@ -721,6 +749,53 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             default:
                 return false;
         }
+    }
+
+    public void jLabelFitToText(){
+        int maxFileNameWidth = 0;
+        int maxTypeWidth = 0;
+        int maxSizeWidth = 0;
+        int maxDateModifiedWidth = 0;
+        int maxDateCreatedWidth = 0;
+
+        int height = list[0].getPreferredSize().height;
+
+        for(int i = 0; i < list.length; i++){
+            System.out.println(list[i].filename.getText() + ": " + list[i].filename.getPreferredSize().width);
+            if(list[i].filename.getPreferredSize().width > maxFileNameWidth){
+                maxFileNameWidth = list[i].filename.getPreferredSize().width;
+            }
+
+            if(list[i].size.getPreferredSize().width > maxSizeWidth){
+                maxSizeWidth = list[i].size.getPreferredSize().width;
+            }
+
+            if(list[i].dateModified.getPreferredSize().width > maxDateModifiedWidth){
+                maxDateModifiedWidth = list[i].dateModified.getPreferredSize().width;
+            }
+
+            if(list[i].dateCreated.getPreferredSize().width > maxDateCreatedWidth){
+                maxDateCreatedWidth = list[i].dateCreated.getPreferredSize().width;
+            }
+
+            if(list[i].fileType.getPreferredSize().width > maxTypeWidth){
+                maxTypeWidth = list[i].fileType.getPreferredSize().width;
+            }
+        }
+
+        System.out.println("Max File width: " + maxFileNameWidth);
+
+        for(int i = 0; i < list.length; i++){
+            list[i].filename.setPreferredSize(new Dimension(maxFileNameWidth, height));
+            list[i].fileType.setPreferredSize(new Dimension(maxTypeWidth, height));
+            list[i].dateCreated.setPreferredSize(new Dimension(maxDateCreatedWidth, height));
+            list[i].dateModified.setPreferredSize(new Dimension(maxDateModifiedWidth, height));
+            list[i].size.setPreferredSize(new Dimension(maxSizeWidth, height));
+            list[i].adjustColumns();
+        }
+
+        size = new Dimension(list[0].getPreferredSize().width,list.length*VERTICAL_FP_GAP);
+        setPreferredSize(size);
     }
 
     /**

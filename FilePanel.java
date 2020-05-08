@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class FilePanel extends JPanel{
     // Fields that will represent the file. Declared & instantiated in order from left to right.
-    private JLabel pic,filename,size,dateCreated,dateModified, fileType;
+    public JLabel pic,filename,size,dateCreated,dateModified, fileType;
     // An image that will be tied to this.pic.
     private ImageIcon icon;
     // Tracks whether or not this file should be selected.
@@ -101,8 +101,6 @@ public class FilePanel extends JPanel{
         // Add a MouseListener & deselect this
         addMouseListener(dp);
         select(false);
-
-        //fileType.setVisible(false);
     }
     
     /**
@@ -130,8 +128,7 @@ public class FilePanel extends JPanel{
             
             // Hide the size of a directory.
             this.size.setVisible(false);
-        }
-        else{
+        } else{
             // Update the icon
             this.icon = new ImageIcon("src/main/java/icons/file.png",path);
             
@@ -145,7 +142,6 @@ public class FilePanel extends JPanel{
             catch (Exception e){
                 this.size.setToolTipText("An error occurred and the file's size could not be read.");
             }
-            this.size.setVisible(true);
         }
         // Update the icon
         this.pic.setIcon(this.icon);
@@ -173,6 +169,8 @@ public class FilePanel extends JPanel{
             System.out.println(e.getMessage());
             this.dateCreated.setText("null");
         }
+
+
     }
     
     /**
@@ -344,11 +342,8 @@ public class FilePanel extends JPanel{
 
     /**
      * @author Ian Ho-Sing-Loy
-     * @return the text for the file type column associated with the file extension*/
-    /**
-     * @author Ian Ho-Sing-Loy
      * @param s extension to translate to type column
-     * @return the text for the file type column
+     * @return the text for the file type column associated with the file extension
      *
      * */
     public String getFileTypeText(String s){
@@ -386,6 +381,37 @@ public class FilePanel extends JPanel{
      */
     public String getFullFileName(){
         return absolutePath + "/" + filename.getText();
+    }
+
+    public void adjustColumns(){
+        int hsum = 8 + pic.getPreferredSize().width;
+        int vsum = 4;
+
+        layout.removeLayoutComponent(filename);
+        layout.removeLayoutComponent(fileType);
+        layout.removeLayoutComponent(size);
+        layout.removeLayoutComponent(dateModified);
+        layout.removeLayoutComponent(dateCreated);
+
+        layout.putConstraint(SpringLayout.WEST, filename, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, filename, vsum, SpringLayout.NORTH,this);
+        hsum += filename.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, fileType, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, fileType, vsum, SpringLayout.NORTH,this);
+        hsum += fileType.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, size, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, size, vsum, SpringLayout.NORTH,this);
+        hsum += size.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, dateModified, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, dateModified, vsum, SpringLayout.NORTH,this);
+        hsum += dateModified.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, dateCreated, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, dateCreated, vsum, SpringLayout.NORTH,this);
+        hsum += dateCreated.getPreferredSize().width + 4;
     }
     
     /**
