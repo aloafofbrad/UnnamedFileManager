@@ -10,13 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-/*
-// Netbeans can't find javax.jnlp ?
-import javax.jnlp.FileContents;
-import javax.jnlp.FileOpenService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;*/
-
 /**
  * Action to create a copy of a file in a new directory
  * @author Brandon Moore
@@ -54,11 +47,7 @@ public class CopyAction extends AbstractAction {
     public void actionPerformed(ActionEvent e){
         String result = null;
         Component parent = (Component) e.getSource();
-        //try{
-            result = moveDir(parent);
-        //} catch (IOException ioe){
-        //    System.out.println(ioe.getMessage());
-      //  }
+        result = moveDir(parent);
     }
     
     /**
@@ -87,7 +76,6 @@ public class CopyAction extends AbstractAction {
      * @author Dan Tran
      * @author Brandon Moore
      */
-    //Currently doesn't work with copying a folder and its content, only creates a new empty folder 
     public static void copyIt(String currentDir, String newDir)
     {
         Path movefrom = FileSystems.getDefault().getPath(targetFile);

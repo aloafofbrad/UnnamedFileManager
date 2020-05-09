@@ -39,7 +39,9 @@ public class DeleteAction extends AbstractAction {
     public void actionPerformed(ActionEvent e){
         String result = null;
         try{
-            result = deleteFile();
+            FilePanel fp = (FilePanel) getValue("FilePanel");
+            result = deleteFile(fp.getAbsolutePath(),fp.getFileName());
+            System.out.println("Done");
         } catch (IOException ioe){
             System.out.println(ioe.getMessage());
         }
@@ -52,18 +54,31 @@ public class DeleteAction extends AbstractAction {
      * @author Bradley Nickle
      * @return the status of the operation
      */
-    private String deleteFile() throws IOException {
+    private String deleteFile(String path,String name) throws IOException {
         try{
-            FilePanel fp = (FilePanel) getValue("FilePanel");
-            File target = new File(fp.getFullFileName());
-            if (target.isDirectory()) {
-            	String[]entries = target.list();
-            	for(String s: entries){
-            	    File currentFile = new File(target.getPath(),s);
-            	    currentFile.delete();
-            	}
+            File target = new File(path + "/" + name);
+            System.out.println(path + "/" + name);
+            if (target.isDirectory()){
+                String[] paths = target.list();
+                for (int i = 0;i < paths.length;i++){
+                    try{
+                        File current = new File(path + "/" + name + "/" + paths[i]);
+                        if (current.isDirectory()){
+                            System.out.println(deleteFile(path + "/" + name,paths[i]));
+                        }
+                        else{
+                            current.delete();
+                        }
+                    }
+                    catch (Exception e){
+                        return e.getMessage();
+                    }
+                }
+                target.delete();
             }
-            target.delete();
+            else{
+                target.delete();
+            }
         } catch (Exception e){
             return e.getMessage();
         }
