@@ -386,10 +386,6 @@ public class FilePanel extends JPanel{
         return absolutePath + "/" + filename.getText();
     }
 
-    /**
-     * Adjust the sizes of the FilePanel's JLabels to be consistent with those of other FilePanels
-     * @param sizes the new sizes of each JLabel
-     */
     public void adjustColumns(Dimension[] sizes){
         filename.setPreferredSize(sizes[0]);
         fileType.setPreferredSize(sizes[1]);
