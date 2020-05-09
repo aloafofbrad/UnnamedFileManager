@@ -56,6 +56,13 @@ public class DeleteAction extends AbstractAction {
         try{
             FilePanel fp = (FilePanel) getValue("FilePanel");
             File target = new File(fp.getFullFileName());
+            if (target.isDirectory()) {
+            	String[]entries = target.list();
+            	for(String s: entries){
+            	    File currentFile = new File(target.getPath(),s);
+            	    currentFile.delete();
+            	}
+            }
             target.delete();
         } catch (Exception e){
             return e.getMessage();
