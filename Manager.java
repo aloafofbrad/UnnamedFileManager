@@ -168,10 +168,6 @@ public class Manager extends Subject{
         changed. */
         notifyObservers();
     }
-
-    public void name(){
-        executeSort();
-    }
     
     /**
      * Checks whether or not a string is an existing directory
@@ -249,22 +245,6 @@ public class Manager extends Subject{
     }
     
     /**
-     * Checks whether or not a string is valid as a file path
-     * @param s the string to be validated
-     * @return true if s is valid
-     * @author Dan Tran
-     */
-    public boolean validate(String s){
-        String arr[] = {"<",">",":","\"","/","\\","|","?","*"};
-        for (int i = 0; i < arr.length; i++)
-        {
-            if(s.contains(arr[i]))
-                return false;
-        }
-         return true;
-    }
-    
-    /**
      * @return true if the current directory is oldest in the history
      */
     public boolean isAtBeginning(){
@@ -283,36 +263,12 @@ public class Manager extends Subject{
     }
     
     /**
-     * @return true if the current directory is not the oldest or newest in the history
-     */
-    public boolean isAtMiddle(){
-        if (!isAtBeginning() && !isAtEnd()) return true;
-        return false;
-    }
-    
-    /**
      * NOT exception safe; WILL throw exceptions. Add at least ONE directory
      * before calling this.
      * @return the address of the current directory
      */
     public String getDirectory(){
         return history.get(index);
-    }
-    
-    /**
-     * NOT exception safe; WILL throw exceptions. Add at least ONE directory
-     * before calling this.
-     * @return the address of a directory in the list
-     */
-    public String getDirectory(int i){
-        return history.get(i);
-    }
-    
-    /**
-     * @return the index of the current directory
-     */
-    public int getIndex(){
-        return index;
     }
     
     /**
