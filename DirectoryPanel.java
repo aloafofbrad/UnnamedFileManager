@@ -138,7 +138,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
         if (this == o){
             return -1;
         }
-        for (int i = 0;i < list.length;i++){
+        for (int i = 0; i < list.length;i++){
             if (list[i].hasSource(o)){
                 return i;
             }
@@ -596,12 +596,12 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
             case 1: // Filename
                 return F2.getFileName().toLowerCase().compareTo(F1.getFileName().toLowerCase()) > 0;
             case 2: // File size
-                return F1.getFileSize().compareTo(F2.getFileSize()) >= 0;
+                return F1.getFileSize().compareTo(F2.getFileSize()) > 0;
             case 3: // File Type
                 return F2.getFileType().toLowerCase().compareTo(F1.getFileType().toLowerCase()) > 0;
-            case 4:
+            case 4: // Date Modified
                 return F1.getDateModified() > F2.getDateModified();
-            case 5:
+            case 5: // Date Created
                 return F1.getDateCreated() > F2.getDateCreated();
             default:
                 return false;
@@ -846,7 +846,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     @Override
     public void mouseEntered(MouseEvent e) {
         int sourceIndex = findSource(e.getSource());
-        if(sourceIndex >= 0 && list[sourceIndex].isSelected() == false) {
+        if(sourceIndex >= 0 && !list[sourceIndex].isSelected()) {
             list[sourceIndex].setBackground(new Color(127,127,127));
         }
     }
@@ -859,7 +859,7 @@ public class DirectoryPanel extends JPanel implements MouseListener,ManagerObser
     @Override
     public void mouseExited(MouseEvent e) {
         int sourceIndex = findSource(e.getSource());
-        if(sourceIndex >= 0 && list[sourceIndex].isSelected() == false) {
+        if(sourceIndex >= 0 && !list[sourceIndex].isSelected()) {
             list[sourceIndex].setBackground(new Color(255, 255, 255));
         }
     }
