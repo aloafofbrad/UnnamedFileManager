@@ -18,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 public class CopyAction extends AbstractAction {
     private String actionName = "Copy";
     private String currentDir;
-    private static String targetFile;
+    private String targetFile;
     private static String fileExt;
     
     /**
@@ -31,9 +31,9 @@ public class CopyAction extends AbstractAction {
         putValue(key,value);
         this.currentDir = current;
         this.targetFile = ((FilePanel) value).getFullFileName();
-       int index =  targetFile.toString().lastIndexOf('/');
-       int index2 = (targetFile.length());
-         fileExt = targetFile.substring(index, index2);
+        int index =  targetFile.toString().lastIndexOf('/');
+        int index2 = (targetFile.length());
+        fileExt = targetFile.substring(index, index2);
     }
     
     public String getCurrent() {
@@ -55,7 +55,7 @@ public class CopyAction extends AbstractAction {
      * @author Dan Tran
      * @param parent 
      */
-    public static String moveDir(Component parent)
+    public String moveDir(Component parent)
     {
     	String selected = new String();
     	JFileChooser fc = new JFileChooser();
@@ -64,7 +64,6 @@ public class CopyAction extends AbstractAction {
             if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
    
                  selected = fc.getSelectedFile().getAbsolutePath();
-                 System.out.println(targetFile + selected);
                  copyIt(targetFile, selected);
                  return "success";
             }
@@ -76,14 +75,14 @@ public class CopyAction extends AbstractAction {
      * @author Dan Tran
      * @author Brandon Moore
      */
-    public static void copyIt(String currentDir, String newDir)
+    public void copyIt(String currentDir, String newDir)
     {
         Path movefrom = FileSystems.getDefault().getPath(targetFile);
-        Path target = FileSystems.getDefault().getPath(newDir+fileExt);
+        Path target = FileSystems.getDefault().getPath(newDir + fileExt);
         try
         {
             Files.copy(movefrom,target, StandardCopyOption.REPLACE_EXISTING);
-        }catch(IOException e)
+        } catch(Exception e)
         {
             e.printStackTrace();
         }
