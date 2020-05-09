@@ -187,6 +187,11 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
         }
     }
 
+    /*
+        Mouse and Key Listener Methods
+    */
+
+    // MouseListener Methods
     /**
      * Overridden MouseListener method.
      * Used to process clicks for backButton, forwardButton, and more.
@@ -293,6 +298,8 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
     @Override
     public void mouseExited(MouseEvent e) {}
 
+
+    // KeyListener Methods
     /**
      * Overridden KeyListener method.
      * Unused but must be overridden anyway.
@@ -308,7 +315,12 @@ public class FileManagerToolbar extends JPanel implements MouseListener,KeyListe
      */
     @Override
     public void keyReleased(KeyEvent e) {}
-    
+
+
+    /*
+        Action Events
+    */
+
     /**
      * Overridden ManagerObserver method. This should not be called,
      * and nothing should happen if it is called.

@@ -25,6 +25,10 @@ public class FilePanel extends JPanel{
     private final int HORIZONTAL_GAP = 0;
     private final int VERTICAL_GAP = 4;
 
+    /*
+        Constructor
+    */
+
     /**
      * Default constructor for FilePanels.
      * @param fn the filename (relative path, more or less)
@@ -107,7 +111,11 @@ public class FilePanel extends JPanel{
 
         this.setBorder(filePanelBorder);
     }
-    
+
+    /*
+        Configuration Methods
+    */
+
     /**
      * Configures the field components with the file's data.
      * @author Bradley Nickle
@@ -236,7 +244,53 @@ public class FilePanel extends JPanel{
             this.size.setText(theSize);
         }
     }
-    
+
+    public void adjustColumns(Dimension[] sizes){
+        filename.setPreferredSize(sizes[0]);
+        fileType.setPreferredSize(sizes[1]);
+        size.setPreferredSize(sizes[2]);
+        dateModified.setPreferredSize(sizes[3]);
+        dateCreated.setPreferredSize(sizes[4]);
+
+        int hsum = 8 + pic.getPreferredSize().width;
+        int vsum = 4;
+
+        layout.removeLayoutComponent(filename);
+        layout.removeLayoutComponent(fileType);
+        layout.removeLayoutComponent(size);
+        layout.removeLayoutComponent(dateModified);
+        layout.removeLayoutComponent(dateCreated);
+
+        layout.putConstraint(SpringLayout.WEST, filename, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, filename, vsum, SpringLayout.NORTH,this);
+        hsum += filename.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, fileType, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, fileType, vsum, SpringLayout.NORTH,this);
+        hsum += fileType.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, size, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, size, vsum, SpringLayout.NORTH,this);
+        hsum += size.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, dateModified, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, dateModified, vsum, SpringLayout.NORTH,this);
+        hsum += dateModified.getPreferredSize().width + 4;
+
+        layout.putConstraint(SpringLayout.WEST, dateCreated, hsum, SpringLayout.WEST,this);
+        layout.putConstraint(SpringLayout.NORTH, dateCreated, vsum, SpringLayout.NORTH,this);
+        hsum += dateCreated.getPreferredSize().width + 4;
+
+        int height = this.getPreferredSize().height;
+        this.setPreferredSize(new Dimension(hsum,height));
+    }
+
+    /*
+        Getter Methods
+    */
+
+    // File Panel Component Content
+
     /**
      * @return the name of the file
      */
@@ -245,14 +299,22 @@ public class FilePanel extends JPanel{
     }
 
     /**
-     * Returns the filename component. Used to check if the user clicked on it.
-     * See DirectoryPanel.mouseClicked() for details.
-     * @return the filename component
-     */
-    public JLabel getFileNameLabel(){
-        return filename;
+     * @author Ian Ho-Sing-Loy
+     * @return file extension of the file
+     * */
+    public String getFileType(){
+        if (isDirectory){
+            return "?";
+        }
+        String type = filename.getText();
+        int dotIndex = type.lastIndexOf(".");
+        if (dotIndex == -1){
+            return "?";
+        }
+        type = type.substring(dotIndex);
+        return type;
     }
-    
+
     /**
      * @return The size of the file, as a BigDecimal.
      *      If the file is a directory, returns 0.
@@ -276,7 +338,7 @@ public class FilePanel extends JPanel{
             return new BigDecimal(-1);
         }
     }
-    
+
     /**
      * @return the date of the last modification, represented in milliseconds since
      *      the epoch.
@@ -297,7 +359,7 @@ public class FilePanel extends JPanel{
             return -1;
         }
     }
-    
+
     /**
      * @return the date of creation, represented in milliseconds since the epoch.
      *      If the file isn't found, return -4.
@@ -332,21 +394,61 @@ public class FilePanel extends JPanel{
     }
 
     /**
-     * @author Ian Ho-Sing-Loy
-     * @return file extension of the file
-     * */
-    public String getFileType(){
-        if (isDirectory){
-            return "?";
-        }
-        String type = filename.getText();
-        int dotIndex = type.lastIndexOf(".");
-        if (dotIndex == -1){
-            return "?";
-        }
-        type = type.substring(dotIndex);
-        return type;
+     * Returns the filename component. Used to check if the user clicked on it.
+     * See DirectoryPanel.mouseClicked() for details.
+     * @return the filename component
+     */
+    public JLabel getFileNameLabel(){
+        return filename;
     }
+
+
+    // File Panel Component Dimensions
+
+    /**
+     * @return the height of the filename component
+     */
+    public int getFileNameHeight(){
+        return filename.getPreferredSize().height;
+    }
+
+    /**
+     * @return the width of the filename component
+     */
+    public int getFileNameWidth(){
+        return filename.getPreferredSize().width;
+    }
+
+    /**
+     * @return the width of the fileType component
+     */
+    public int getFileTypeWidth(){
+        return fileType.getPreferredSize().width;
+    }
+
+    /**
+     * @return the width of the size component
+     */
+    public int getSizeWidth(){
+        return size.getPreferredSize().width;
+    }
+
+    /**
+     * @return the width of the dateModified component
+     */
+    public int getDateModifiedWidth(){
+        return dateModified.getPreferredSize().width;
+    }
+
+    /**
+     * @return the width of the dateCreated component
+     */
+    public int getDateCreatedWidth(){
+        return dateCreated.getPreferredSize().width;
+    }
+
+
+    // File Panel Component Text formatting
 
     /**
      * @author Ian Ho-Sing-Loy
@@ -378,96 +480,24 @@ public class FilePanel extends JPanel{
         else if (s.equals(".mp3") || s.equals(".wav")) return "Audio";
         else return "Unknown File Type";
     }
-    
-    /**
-     * @return the absolute path of the file
-     */
-    public String getFullFileName(){
-        return absolutePath + "/" + filename.getText();
-    }
 
-    public void adjustColumns(Dimension[] sizes){
-        filename.setPreferredSize(sizes[0]);
-        fileType.setPreferredSize(sizes[1]);
-        size.setPreferredSize(sizes[2]);
-        dateModified.setPreferredSize(sizes[3]);
-        dateCreated.setPreferredSize(sizes[4]);
-        
-        int hsum = 8 + pic.getPreferredSize().width;
-        int vsum = 4;
 
-        layout.removeLayoutComponent(filename);
-        layout.removeLayoutComponent(fileType);
-        layout.removeLayoutComponent(size);
-        layout.removeLayoutComponent(dateModified);
-        layout.removeLayoutComponent(dateCreated);
+    // Status Getter Methods
 
-        layout.putConstraint(SpringLayout.WEST, filename, hsum, SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH, filename, vsum, SpringLayout.NORTH,this);
-        hsum += filename.getPreferredSize().width + 4;
-
-        layout.putConstraint(SpringLayout.WEST, fileType, hsum, SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH, fileType, vsum, SpringLayout.NORTH,this);
-        hsum += fileType.getPreferredSize().width + 4;
-
-        layout.putConstraint(SpringLayout.WEST, size, hsum, SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH, size, vsum, SpringLayout.NORTH,this);
-        hsum += size.getPreferredSize().width + 4;
-
-        layout.putConstraint(SpringLayout.WEST, dateModified, hsum, SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH, dateModified, vsum, SpringLayout.NORTH,this);
-        hsum += dateModified.getPreferredSize().width + 4;
-
-        layout.putConstraint(SpringLayout.WEST, dateCreated, hsum, SpringLayout.WEST,this);
-        layout.putConstraint(SpringLayout.NORTH, dateCreated, vsum, SpringLayout.NORTH,this);
-        hsum += dateCreated.getPreferredSize().width + 4;
-        
-        int height = this.getPreferredSize().height;
-        this.setPreferredSize(new Dimension(hsum,height));
-    }
-    
-    /**
-     * @return the directory the file is stored in 
-     */
-    public String getAbsolutePath(){
-        return absolutePath;
-    }
-
-    /**
-     * @author Ian Ho-Sing-Loy
-     * @param s New string for the filename
-     */
-    public void setText(String s){
-        filename.setText(s);
-    }
-
-    /**
-     * Selects or deselects the FilePanel. Highlights or "unhighlights" it.
-     * @param b true for selected, false for deselected.
-     */
-    public void select(boolean b){
-        isSelected = b;
-        if (isSelected){
-            setBackground(new Color(100,100,228));
-        } else{
-            setBackground(Color.white);
-        }
-    }
-    
     /**
      * @return a boolean representing whether or not this is selected
      */
     public boolean isSelected(){
         return isSelected;
     }
-    
-    /** 
+
+    /**
      * @return true if the represented file is a directory, false otherwise
      */
     public boolean isDirectory(){
         return isDirectory;
     }
-    
+
     /**
      * Checks if this FilePanel is or has the source of an event (likely MouseEvent).
      * @param o the event Object to be compared with
@@ -482,46 +512,53 @@ public class FilePanel extends JPanel{
         if (o == size) return true;
         return false;
     }
-    
+
+
+    /*
+        Setter Methods
+    */
+
     /**
-     * @return the height of the filename component
+     * @author Ian Ho-Sing-Loy
+     * @param s New string for the filename
      */
-    public int getFileNameHeight(){
-        return filename.getPreferredSize().height;
+    public void setText(String s){
+        filename.setText(s);
     }
-    
+
+
+    /*
+         Path and Directory Methods
+    */
+
     /**
-     * @return the width of the filename component
+     * @return the absolute path of the file
      */
-    public int getFileNameWidth(){
-        return filename.getPreferredSize().width;
+    public String getFullFileName(){
+        return absolutePath + "/" + filename.getText();
     }
-    
+
     /**
-     * @return the width of the fileType component
+     * @return the directory the file is stored in
      */
-    public int getFileTypeWidth(){
-        return fileType.getPreferredSize().width;
+    public String getAbsolutePath(){
+        return absolutePath;
     }
-    
+
+
+    /*
+        Action Methods
+    */
     /**
-     * @return the width of the size component
+     * Selects or deselects the FilePanel. Highlights or "unhighlights" it.
+     * @param b true for selected, false for deselected.
      */
-    public int getSizeWidth(){
-        return size.getPreferredSize().width;
-    }
-    
-    /**
-     * @return the width of the dateModified component
-     */
-    public int getDateModifiedWidth(){
-        return dateModified.getPreferredSize().width;
-    }
-    
-    /**
-     * @return the width of the dateCreated component
-     */
-    public int getDateCreatedWidth(){
-        return dateCreated.getPreferredSize().width;
+    public void select(boolean b){
+        isSelected = b;
+        if (isSelected){
+            setBackground(new Color(100,100,228));
+        } else{
+            setBackground(Color.white);
+        }
     }
 }
