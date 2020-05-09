@@ -245,6 +245,10 @@ public class FilePanel extends JPanel{
         }
     }
 
+    /**
+     * Adjust the widths of this FilePanel's JLabels to be consistent with those of the other FilePanels.
+     * @param sizes the new sizes for the JLabels.
+     */
     public void adjustColumns(Dimension[] sizes){
         filename.setPreferredSize(sizes[0]);
         fileType.setPreferredSize(sizes[1]);
