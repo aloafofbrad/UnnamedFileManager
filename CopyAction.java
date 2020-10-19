@@ -87,5 +87,4 @@ public class CopyAction extends AbstractAction {
             e.printStackTrace();
         }
     }
-    
 }
